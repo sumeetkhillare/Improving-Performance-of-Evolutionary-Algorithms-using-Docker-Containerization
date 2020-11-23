@@ -1,4 +1,5 @@
 from django.shortcuts import render
+from django.http import JsonResponse
 
 from django.http import HttpResponse
 
@@ -26,4 +27,27 @@ def code(request):
 
 
 def check(request):
-    return HttpResponse('You are in container 1!!!')
+    query=request.GET.get('arr')
+    print(query)
+    #getting full url of requesting website
+    arr=query.split(',')
+    print(arr)
+    listofnum=arr
+    lisofintnum=[]
+    for i in listofnum:
+        lisofintnum.append(int(i))
+    x = lisofintnum
+    insertionSort(x)
+    print(x)
+
+    return JsonResponse({'arr':x,'text':'this sorted array comes from InsertionSort-container!!!'})
+    # return HttpResponse('You are in container 1!!! + Result : '+str(arr))
+
+def insertionSort(arr): 
+    for i in range(1, len(arr)): 
+        key = arr[i] 
+        j = i-1
+        while j >=0 and key < arr[j] : 
+                arr[j+1] = arr[j] 
+                j -= 1
+        arr[j+1] = key 

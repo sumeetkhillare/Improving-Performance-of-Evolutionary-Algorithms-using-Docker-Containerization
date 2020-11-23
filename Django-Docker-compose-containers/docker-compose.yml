@@ -1,12 +1,19 @@
 version: '3'
 services:
-  container-1:
+  insertion-sort:
     restart: always
-    build: ./django-container-1
+    build: ./insertion-sort
     ports:
       - "4000:8000"
-  container-2:
+  quicksort-container:
     restart: always
-    build: ./django-container-2
+    build: ./quicksort-container
+    ports:
+      - "4002:8000"
+  
+  main-container:
+    network_mode: "host"
+    restart: always
+    build: ./main-container
     ports:
       - "8000:8000"
