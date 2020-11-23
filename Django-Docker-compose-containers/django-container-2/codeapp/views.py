@@ -25,3 +25,5 @@ def code(request):
     return HttpResponse('Please give input')
 
 
+def test(request):
+    return HttpResponse('You are in container 2!!!')
