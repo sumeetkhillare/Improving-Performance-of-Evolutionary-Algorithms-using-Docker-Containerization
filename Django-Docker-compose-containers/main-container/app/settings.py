@@ -25,7 +25,7 @@ SECRET_KEY = 'r==tbw^uyb-+ne0+h*lhoi+f3-_p5$lu7pk5xb6=u14+*c=rx5'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['192.168.0.5','127.0.0.1','localhost']#Add ip address of your pc
+ALLOWED_HOSTS = ['*']#Add ip address of your pc
 
 
 # Application definition

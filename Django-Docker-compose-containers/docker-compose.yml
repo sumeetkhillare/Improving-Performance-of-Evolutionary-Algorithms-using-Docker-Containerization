@@ -10,9 +10,18 @@ services:
     build: ./quicksort-container
     ports:
       - "4002:8000"
-  
+  bubble-sort:
+    restart: always
+    build: ./bubble-sort
+    ports:
+      - "4004:8000"
+  selection-sort:
+    restart: always
+    build: ./selection-sort
+    ports:
+      - "4006:8000"
+
   main-container:
-    network_mode: "host"
     restart: always
     build: ./main-container
     ports:

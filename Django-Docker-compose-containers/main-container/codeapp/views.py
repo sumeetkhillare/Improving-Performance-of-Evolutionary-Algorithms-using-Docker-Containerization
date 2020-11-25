@@ -11,10 +11,11 @@ def code(request):
     if request.method=="POST":
         query=request.POST['array']
         print(query)
-        l=requests.get('http://192.168.0.5:4000/check/?arr='+query).json() #Add ip address of your pc
-        k=requests.get('http://192.168.0.5:4002/check/?arr='+query).json() #Add ip address of your pc
-    return HttpResponse(str(l['text'])+' : '+str(l['arr'])+' ********* '+str(k['text'])+' : '+str(l['arr']))
-
+        c1=requests.get('http://insertion-sort:8000/check/?arr='+query).json() #Add ip address of your pc
+        c2=requests.get('http://quicksort-container:8000/check/?arr='+query).json()
+        c3=requests.get('http://bubble-sort:8000/check/?arr='+query).json() #Add ip address of your pc
+        c4=requests.get('http://selection-sort:8000/check/?arr='+query).json()
+    return HttpResponse(str(c1['text'])+' : '+str(c1['arr'])+' ********* '+str(c2['text'])+' : '+str(c2['arr'])+"Quik sort "+str(c3['text'])+str(c3['arr'])+str(c4['text'])+' : '+str(c4['arr']))
 
 def test(request):
     return HttpResponse('You are in container 2!!!')
