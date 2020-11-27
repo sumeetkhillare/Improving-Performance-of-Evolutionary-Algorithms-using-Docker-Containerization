@@ -5,24 +5,38 @@ services:
     build: ./insertion-sort
     ports:
       - "4000:8000"
+    container_name: insertion-sort
   quicksort-container:
     restart: always
     build: ./quicksort-container
     ports:
       - "4002:8000"
+    container_name: quick-sort
   bubble-sort:
     restart: always
     build: ./bubble-sort
     ports:
       - "4004:8000"
+    container_name: bubble-sort
   selection-sort:
     restart: always
     build: ./selection-sort
     ports:
       - "4006:8000"
-
+    container_name: selection-sort
   main-container:
     restart: always
     build: ./main-container
     ports:
       - "8000:8000"
+    depends_on: 
+      - db
+    container_name: main-container
+  
+  db:
+    image: postgres:12.0-alpine
+    environment: 
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=postgres
+    container_name: db
