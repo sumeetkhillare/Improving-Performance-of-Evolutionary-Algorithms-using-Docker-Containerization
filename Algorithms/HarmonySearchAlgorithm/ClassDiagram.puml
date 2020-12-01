@@ -1,0 +1,79 @@
+@startuml
+
+hide empty members
+
+class Harmony{
+    + notes
+    + val_of_object_fun
+    + init(self, opt_problem)
+}
+class HarmonyMemory{
+    + harmonies: List[Harmony]
+    + init(self, num_of_rows, opt_problem)
+    + index(self, value_to_find, note_index, gain)
+    + max_note_index(self)
+}
+class Tsp{
+    + data
+    + distance
+    + init(self)
+    + calculate_obj_function(self, harmony)
+    + generate_dec_variable(self, new_harmony)
+    + take_dec_variable_hm(self, harmony_memory, new_harmony, note_index)
+    + pitch adj_mechanism(self, harmony_memory, new_harmony, new_note, note_index, hm_bandwidth)
+    + complete_harmony(self)
+    + visualise_solution(self, harmony)
+    + is_harmony_complete(self)
+    + exchange_solution(self, worst_hm_obj_fun, new_sol_obj_fun)
+    + reverse_sort(self)
+}
+class Kp{
+    + data
+    + capacity
+    + available_cap
+    + init(self, capacity)
+    + calculate_obj_function(self, harmony)
+    + generate_dec_variable(self, new_harmony)
+    + take_dec_variable_hm(self, harmony_memory, new_harmony, note_index)
+    + pitch adj_mechanism(self, harmony_memory, new_harmony, new_note, note_index, hm_bandwidth)
+    + complete_harmony(self)
+    + visualise_solution(self, harmony)
+    + is_harmony_complete(self)
+    + exchange_solution(self, worst_hm_obj_fun, new_sol_obj_fun)
+    + reverse_sort(self)
+}
+interface OptimizationProblem{
+    {abstract} + calculate_obj_function(self, harmony)
+    {abstract} + generate_dec_variable(self, new_harmony)
+    {abstract} + take_dec_variable_hm(self, harmony_memory, new_harmony, note_index)
+    {abstract} + pitch adj_mechanism(self, harmony_memory, new_harmony, new_note, note_index, hm_bandwidth)
+    {abstract} + complete_harmony(self)
+    {abstract} + visualise_solution(self, harmony)
+    {abstract} + is_harmony_complete(self)
+    {abstract} + exchange_solution(self, worst_hm_obj_fun, new_sol_obj_fun)
+    {abstract} + reverse_sort(self)
+
+}
+class OutputData{
+    + obj_functions
+    + iterations
+    + path_to_data
+
+    + init(path)
+    + add_data(self, iteration, obj_function)
+    + data_to_xls(self)
+    + plot_data(self)
+
+}
+
+OptimizationProblem <|-- Tsp
+OptimizationProblem <|-- Kp
+HarmonyMemory o-- Harmony
+Harmony <.. OptimizationProblem : uses
+
+note "harmony_search_algorithm(num_of_rows_hm, num_of_iterations, hm_considering_rate, hm_pitch_adjusting_rate, hm_bandwidth, opt_problem, out_data, expected_value)" as alg
+alg <.. OptimizationProblem : uses
+alg <.. HarmonyMemory : uses
+alg <.. OutputData : uses
+
+@enduml

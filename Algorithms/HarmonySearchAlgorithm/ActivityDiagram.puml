@@ -1,0 +1,38 @@
+@startumlodnie z
+start
+:Inicjalizacja pamięci harmonii harmony_memory losowymi wartościami,
+obliczanie wartość funkcji celu dla każdej harmonii.]
+:iteration = 1]
+while(Główna pętla algorytmu) is (iteracja < num_of_iterations oraz \nwartość funkcji celu najlepszej harmonii jest gorsza od optymalnej)
+    : note_index = 1]
+    while(Tworzenie nowego rozwiązania new_harmony, \nprzechodzenie po elementach rozwiązania) is (not new_harmony.is_completed())
+
+        if (rand < hm_considering_rate) then (Tak)
+            :Wybieranie losowego rozwiązania z harmony_memory, o indeksie rand_index]
+            :new_note = harmony_memory(rand_index, note_index)]
+            if (rand < hm_pitch_adjusting_rate) then (Tak)
+                :Skorzystanie z mechanizmu dostrajania wysokości tonu]
+            else(Nie)
+            endif
+
+        else(Nie)
+            :new_note = losowa wartość zmiennej decyzyjnej]
+        endif
+        :new_harmony[note_index] = new_note]
+        :note_index += 1]
+
+    endwhile (new_harmony.is_completed())
+    :Obliczenie wartości funkcji celu dla new_harmony]
+    if (Czy nowe rozwiązanie jest lepsze, pod względem funkcji celu, od najgorszego z harmony_memory) then (Tak)
+        :Zamiana rozwiązań]
+    else(Nie)
+    endif
+
+    :iteration += 1]
+
+endwhile (iteracja >= num_of_iterations lub \nwartość funkcji celu najlepszej harmonii jest lepsza od optymalnej)
+
+:Zwróć najlepsze rozwiązanie spośród harmony_memory]
+
+end
+@enduml
