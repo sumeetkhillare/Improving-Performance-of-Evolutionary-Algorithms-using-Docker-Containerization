@@ -3,9 +3,9 @@ import random
 
 generations = 10
 population_size = 5
-vector_length = 2
-vector_upperlimit = 5
-vector_lowerlimit = -5
+vector_length = 4
+vector_upperlimit = 10
+vector_lowerlimit = -10
 
 
 def initlize_population(population_size, vector_length):
