@@ -24,6 +24,12 @@ services:
     ports:
       - "4006:8000"
     container_name: selection-sort
+  jaya-algo:
+    restart: always
+    build: ./jaya-algo
+    ports:
+      - "4008:8000"
+    container_name: jaya-algo
   main-container:
     restart: always
     build: ./main-container

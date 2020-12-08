@@ -2,7 +2,7 @@ from django.shortcuts import render
 import requests
 from django.http import HttpResponse
 import json
-from .models import CodeInput
+from .models import CodeInput,OptimizationCodeInput
     
 
 def home(request):
@@ -22,6 +22,7 @@ def code(request):
         c3=requests.get('http://bubble-sort:8000/check/?arr='+query).json() #Add ip address of your pc
         c4=requests.get('http://selection-sort:8000/check/?arr='+query).json()
         code_inp.delete()
+        
     # return HttpResponse(str(c1['text'])+' : '+str(c1['arr'])+str(c2['text'])+' : '+str(c2['arr'])+"Quik sort "+str(c3['text'])+str(c3['arr'])+str(c4['text'])+' : '+str(c4['arr']))
     dic1={'sortname':str(c1['text']),'sortoutput':str(c1['arr'])}
     dic2={'sortname':str(c2['text']),'sortoutput':str(c2['arr'])}
@@ -38,3 +39,18 @@ def test(request):
         s+=str(i['codeinput'])+"    "+str(i['code_type'])+"    "
     return HttpResponse(str(s))
     # return HttpResponse('You are in container 2!!!')
+def optimizationcode(request):
+    if request.method=="POST":
+        opt_pop_size=request.POST['pop_size']
+        opt_gen=request.POST['gen']
+        opt_inp=OptimizationCodeInput()
+        opt_inp.code_type='optimization'
+        opt_inp.opt_pop_size=opt_pop_size
+        opt_inp.opt_gen=opt_gen
+        opt_inp.save()
+        jaya_container=requests.get('http://jaya-algo:8000/check/').json()        
+        opt_inp.delete()
+        dic_jaya={'algoname':str(jaya_container['text']),'algobest':str(jaya_container['best']),'algocoordi':str(jaya_container['algo-coordi'])}
+        alldic=[dic_jaya]
+        alldic={'alldic':alldic}
+        return render(request,'codeapp/output_optimization_containers.html',alldic)

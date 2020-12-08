@@ -1,7 +1,7 @@
 <html>
     <h1>This is Main Container</h1>
     <br>
-    <h3>Sort!!!</h3>
+    <h3>For Sorting</h3>
     <br>
     <form action="code/" method="post">
         {% csrf_token %}
@@ -9,4 +9,13 @@
     <button type='submit'>SORT!!!</button>
     </form>
     <br> 
+    <h3>For Optimization</h3>
+    <br>
+    <form action="optimizationcode/" method="post">
+        {% csrf_token %}
+    <input type="text" placeholder="type population size" name="pop_size">
+    <input type="text" placeholder="type generation" name="gen">
+    <button type='submit'>GO!!!</button>
+    </form>
+    
 </html>
