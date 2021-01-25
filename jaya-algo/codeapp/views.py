@@ -27,7 +27,8 @@ lb=[-20,-20]
 ub=[20,20]
 
 def initialpopulation(mini,maxi,pop_size):
-    pop=[]        
+    pop=[]
+
     for i in range(pop_size):
         p=[]        
         for a,b in zip(mini,maxi):
@@ -89,7 +90,12 @@ def jaya(*argv):
     return best,xbest
 
 
-def main(pop_size1,Gen1):
+def main(pop_size1,Gen1,lower_val,upper_val):
+
+    global lb
+    global ub 
+    lb=[lower_val,lower_val]
+    ub=[upper_val,upper_val]
     best,xbest = jaya(pop_size1, Gen1, lb, ub)
     print('The objective function value = {}'.format(best))
     print('The optimum values of variables = {}'.format(xbest))
@@ -130,10 +136,27 @@ def check(request):
         opt_pop_size=str(opt_pop_size)
         opt_pop_size=opt_pop_size.replace("('","")
         opt_pop_size=opt_pop_size.replace("',)","")
+        
+        postgreSQL_select_Query3 = "SELECT code_lb FROM codeapp_optimizationcodeinput where code_type='optimization';"
+        cursor.execute(postgreSQL_select_Query3)
+        code_lb=cursor.fetchone()
+        code_lb=str(code_lb)
+        code_lb=code_lb.replace("('","")
+        code_lb=code_lb.replace("',)","")
+        
+        postgreSQL_select_Query4 = "SELECT code_ub FROM codeapp_optimizationcodeinput where code_type='optimization';"
+        cursor.execute(postgreSQL_select_Query4)
+        code_ub=cursor.fetchone()
+        code_ub=str(code_ub)
+        code_ub=code_ub.replace("('","")
+        code_ub=code_ub.replace("',)","")
+        
+        print(code_lb,code_ub)
+
         # Print PostgreSQL Connection properties
         # x=str(main(int(opt_pop_size),int(opt_gen)))+str(' ')+str(opt_gen)+' '+str(opt_pop_size)
         # returnstring=str(x)
-        x,y=main(int(opt_pop_size),int(opt_gen))
+        x,y=main(int(opt_pop_size),int(opt_gen),int(code_lb),int(code_ub))
         print('jaya algo container'+str(' ')+str(opt_gen)+' '+str(opt_pop_size))
         return JsonResponse({'best':str(x),'algo-coordi':str(y),'text':'Jaya Container'})
     except (Exception, psycopg2.Error) as error :

@@ -44,10 +44,14 @@ def optimizationcode(request):
     if request.method=="POST":
         opt_pop_size=request.POST['pop_size']
         opt_gen=request.POST['gen']
+        lb=request.POST['lb']
+        ub=request.POST['ub']
         opt_inp=OptimizationCodeInput()
         opt_inp.code_type='optimization'
         opt_inp.opt_pop_size=opt_pop_size
         opt_inp.opt_gen=opt_gen
+        opt_inp.code_lb=lb
+        opt_inp.code_ub=ub
         opt_inp.save()
         jaya_container=requests.get('http://jaya-algo:8000/check/').json()
         rao_container=requests.get('http://rao-algo:8000/check/').json()

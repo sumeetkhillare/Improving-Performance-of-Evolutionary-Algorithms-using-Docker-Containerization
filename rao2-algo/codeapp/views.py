@@ -11,14 +11,14 @@ from django.http import HttpResponse
 import random
 import math
 import numpy as np
-def rao2Algo(Max_iter,SearchAgents_no):
+def rao2Algo(Max_iter,SearchAgents_no,lower_val,upper_val):
     maxfes = 500000  # Maximum functions evaluation
     dim = 4  # Number of design variables
     # SearchAgents_no = 10  # Population size
     # Max_iter = math.floor(maxfes / SearchAgents_no)  # Maximum number of iterations
     # Max_iter = 100
-    lb = -20 * np.ones(dim)  # lower bound
-    ub = 20 * np.ones(dim)  # upper bound
+    lb = lower_val * np.ones(dim)  # lower bound
+    ub = upper_val * np.ones(dim)  # upper bound
 
 
     def fitness(particle):
@@ -114,10 +114,28 @@ def check(request):
         opt_pop_size=str(opt_pop_size)
         opt_pop_size=opt_pop_size.replace("('","")
         opt_pop_size=opt_pop_size.replace("',)","")
+
+
+
+        postgreSQL_select_Query3 = "SELECT code_lb FROM codeapp_optimizationcodeinput where code_type='optimization';"
+        cursor.execute(postgreSQL_select_Query3)
+        code_lb=cursor.fetchone()
+        code_lb=str(code_lb)
+        code_lb=code_lb.replace("('","")
+        code_lb=code_lb.replace("',)","")
+        
+        postgreSQL_select_Query4 = "SELECT code_ub FROM codeapp_optimizationcodeinput where code_type='optimization';"
+        cursor.execute(postgreSQL_select_Query4)
+        code_ub=cursor.fetchone()
+        code_ub=str(code_ub)
+        code_ub=code_ub.replace("('","")
+        code_ub=code_ub.replace("',)","")
+        
+
         # Print PostgreSQL Connection properties
         # x=str(main(int(opt_pop_size),int(opt_gen)))+str(' ')+str(opt_gen)+' '+str(opt_pop_size)
         # returnstring=str(x)
-        x,y=rao2Algo(int(opt_pop_size),int(opt_gen))
+        x,y=rao2Algo(int(opt_pop_size),int(opt_gen),int(code_lb),int(code_ub))
         print('rao2 algo container'+str(' ')+str(opt_gen)+' '+str(opt_pop_size))
         return JsonResponse({'best':str(x),'algo-coordi':str(y),'text':'Rao2 Container'})
     except (Exception, psycopg2.Error) as error :

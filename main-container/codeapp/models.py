@@ -16,5 +16,7 @@ class OptimizationCodeInput(models.Model):
     opt_pop_size=models.TextField()
     opt_gen=models.TextField()
     code_type=models.CharField(max_length=200)
+    code_lb=models.TextField()
+    code_ub=models.TextField()
     def __str__(self):
         return self.code_type
