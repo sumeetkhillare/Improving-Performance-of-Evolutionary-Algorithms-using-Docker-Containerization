@@ -3,6 +3,7 @@ import requests
 from django.http import HttpResponse
 import json
 from .models import CodeInput,OptimizationCodeInput
+import smtplib
 
 
 def home(request):
@@ -64,4 +65,16 @@ def optimizationcode(request):
         dic_rao3={'algoname':str(rao3_container['text']),'algobest':str(rao3_container['best']),'algocoordi':str(rao3_container['algo-coordi'])}
         alldic=[dic_jaya,dic_rao,dic_rao2,dic_rao3] #,dic_rao,dic_rao2
         alldic={'alldic':alldic}
+        
+        #Send mail
+        email='lastyearproj123@gmail.com'
+        email2='cur53onu@gmail.com'
+        password='Lastyearproj@123'
+        message='Mail From Main Container\n'+str(dic_jaya['algoname'])+'     '+str(dic_jaya['algobest'])+'     '+str(dic_jaya['algocoordi'])+'\n'+str(dic_rao['algoname'])+'     '+str(dic_rao['algobest'])+'     '+str(dic_rao['algocoordi'])+'\n'+str(dic_rao2['algoname'])+'     '+str(dic_rao2['algobest'])+'     '+str(dic_rao2['algocoordi'])+'\n'+str(dic_rao3['algoname'])+'     '+str(dic_rao3['algobest'])+'     '+str(dic_rao3['algocoordi'])        
+        server = smtplib.SMTP("smtp.gmail.com",587)
+        server.starttls()
+        server.login(email,password)
+        server.sendmail(email,email2,message)
+        server.quit()
+
         return render(request,'codeapp/output_optimization_containers.html',alldic)
