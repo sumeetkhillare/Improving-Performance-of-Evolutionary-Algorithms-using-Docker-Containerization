@@ -4,8 +4,8 @@ from django.http import HttpResponse
 import json
 from .models import CodeInput,OptimizationCodeInput
 import smtplib
-
-
+from smtplib import SMTPRecipientsRefused
+from datetime import datetime
 def home(request):
     # c1=requests.get('http://python-container:8000')
     # print(c1)
@@ -47,6 +47,7 @@ def optimizationcode(request):
         opt_gen=request.POST['gen']
         lb=request.POST['lb']
         ub=request.POST['ub']
+        recipient_email=request.POST['email']
         opt_inp=OptimizationCodeInput()
         opt_inp.code_type='optimization'
         opt_inp.opt_pop_size=opt_pop_size
@@ -68,13 +69,17 @@ def optimizationcode(request):
         
         #Send mail
         email='lastyearproj123@gmail.com'
-        email2='cur53onu@gmail.com'
+        email2=recipient_email
         password='Lastyearproj@123'
-        message='Mail From Main Container\n'+str(dic_jaya['algoname'])+'     '+str(dic_jaya['algobest'])+'     '+str(dic_jaya['algocoordi'])+'\n'+str(dic_rao['algoname'])+'     '+str(dic_rao['algobest'])+'     '+str(dic_rao['algocoordi'])+'\n'+str(dic_rao2['algoname'])+'     '+str(dic_rao2['algobest'])+'     '+str(dic_rao2['algocoordi'])+'\n'+str(dic_rao3['algoname'])+'     '+str(dic_rao3['algobest'])+'     '+str(dic_rao3['algocoordi'])        
+        now = datetime.now()
+        message='Mail From Main Container\n'+str(dic_jaya['algoname'])+'     '+str(dic_jaya['algobest'])+'     '+str(dic_jaya['algocoordi'])+'\n'+str(dic_rao['algoname'])+'     '+str(dic_rao['algobest'])+'     '+str(dic_rao['algocoordi'])+'\n'+str(dic_rao2['algoname'])+'     '+str(dic_rao2['algobest'])+'     '+str(dic_rao2['algocoordi'])+'\n'+str(dic_rao3['algoname'])+'     '+str(dic_rao3['algobest'])+'     '+str(dic_rao3['algocoordi'])+'\n'+str(now)        
         server = smtplib.SMTP("smtp.gmail.com",587)
         server.starttls()
         server.login(email,password)
-        server.sendmail(email,email2,message)
+        try:
+            server.sendmail(email,email2,message)
+        except SMTPRecipientsRefused:
+            pass
         server.quit()
 
         return render(request,'codeapp/output_optimization_containers.html',alldic)
