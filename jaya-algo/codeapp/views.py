@@ -25,6 +25,7 @@ def myobj(p1):
 # Gen = 10
 lb=[-20,-20]
 ub=[20,20]
+message=''
 
 def initialpopulation(mini,maxi,pop_size):
     pop=[]
@@ -76,6 +77,7 @@ def jaya(*argv):
     dim=len(lb)
     gen=0
     best=[]
+    global message
     while (gen<Gen):
         new_p1=updatepopulation(p1,dim)
         new_p1=trimr(new_p1,lb,ub)
@@ -85,8 +87,10 @@ def jaya(*argv):
     #     print(gen)
         best=p1['f'].min()
         xbest=p1.loc[p1['f'].idxmin()][0:dim].tolist()
-#     print('Best={}'.format(best))
-#     print('xbest={}'.format(xbest))
+        message+="Generation "+str(gen)+" best "+str(best)+" "+str(xbest)+"\n"
+    # print('Best={}'.format(best))
+    # print('xbest={}'.format(xbest))
+    
     return best,xbest
 
 
@@ -158,10 +162,10 @@ def check(request):
         # returnstring=str(x)
         x,y=main(int(opt_pop_size),int(opt_gen),int(code_lb),int(code_ub))
         print('jaya algo container'+str(' ')+str(opt_gen)+' '+str(opt_pop_size))
-        return JsonResponse({'best':str(x),'algo-coordi':str(y),'text':'Jaya Container'})
+        return JsonResponse({'best':str(x),'algo-coordi':str(y),'text':'Jaya Container','Lines':str(message)})
     except (Exception, psycopg2.Error) as error :
         print ("Error while connecting to PostgreSQL", error)
-        return JsonResponse({'best':'Error','algo-coordi':'Error','text':'Jaya Container'})
+        return JsonResponse({'best':'Error','algo-coordi':'Error','text':'Jaya Container','Lines':'error'})
     finally:
         #closing database connection.
         if(connection):
@@ -169,7 +173,7 @@ def check(request):
             connection.close()
             print("PostgreSQL connection is closed")
 
-    return JsonResponse({'best':'Error','algo-coordi':'Error','text':'Jaya Container'})
+    return JsonResponse({'best':'Error','algo-coordi':'Error','text':'Jaya Container','Lines':'error'})
     # return HttpResponse('You are in container 1!!! + Result : '+str(arr))
 
 

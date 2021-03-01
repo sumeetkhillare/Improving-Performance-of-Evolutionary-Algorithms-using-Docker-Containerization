@@ -3,36 +3,24 @@ import requests
 from django.http import HttpResponse
 import json
 from .models import CodeInput,OptimizationCodeInput
-import smtplib
+import smtplib 
+from email.mime.multipart import MIMEMultipart 
+from email.mime.text import MIMEText 
+from email.mime.base import MIMEBase 
+from email import encoders 
 from smtplib import SMTPRecipientsRefused
+
+import os
+from email.mime.multipart import MIMEMultipart
+from email.mime.application import MIMEApplication
+
+
 from datetime import datetime
 def home(request):
-    # c1=requests.get('http://python-container:8000')
-    # print(c1)
     return render(request,'codeapp/home.html')
 def code(request):
     return render(request,'codeapp/home.html')
-    # if request.method=="POST":
-    #     query=request.POST['array']
-    #     print(query)
-    #     code_inp=CodeInput()
-    #     code_inp.code_type='sorting'
-    #     code_inp.codeinput=query
-    #     code_inp.save()
-    #     c1=requests.get('http://insertion-sort:8000/check/?arr='+query).json() #Add ip address of your pc
-    #     c2=requests.get('http://quicksort-container:8000/check/?arr='+query).json()
-    #     c3=requests.get('http://bubble-sort:8000/check/?arr='+query).json() #Add ip address of your pc
-    #     c4=requests.get('http://selection-sort:8000/check/?arr='+query).json()
-    #     code_inp.delete()
-    #
-    # # return HttpResponse(str(c1['text'])+' : '+str(c1['arr'])+str(c2['text'])+' : '+str(c2['arr'])+"Quik sort "+str(c3['text'])+str(c3['arr'])+str(c4['text'])+' : '+str(c4['arr']))
-    # dic1={'sortname':str(c1['text']),'sortoutput':str(c1['arr'])}
-    # dic2={'sortname':str(c2['text']),'sortoutput':str(c2['arr'])}
-    # dic3={'sortname':str(c3['text']),'sortoutput':str(c3['arr'])}
-    # dic4={'sortname':str(c4['text']),'sortoutput':str(c4['arr'])}
-    # alldic=[dic1,dic2,dic3,dic4]
-    # alldic={'alldic':alldic}
-    # return render(request,'codeapp/output.html',alldic)
+
 def test(request):
     code_input =list( CodeInput.objects.values('codeinput','code_type'))
     print(code_input)
@@ -40,7 +28,6 @@ def test(request):
     for i in code_input:
         s+=str(i['codeinput'])+"    "+str(i['code_type'])+"    "
     return HttpResponse(str(s))
-    # return HttpResponse('You are in container 2!!!')
 def optimizationcode(request):
     if request.method=="POST":
         opt_pop_size=request.POST['pop_size']
@@ -48,6 +35,7 @@ def optimizationcode(request):
         lb=request.POST['lb']
         ub=request.POST['ub']
         recipient_email=request.POST['email']
+        user_input_data="Population Size: "+str(opt_pop_size)+"\n"+"Generations: "+str(opt_gen)+"\n"+"Lower bound: "+str(lb)+"\n"+"Upper bound: "+str(ub)+"\n"
         opt_inp=OptimizationCodeInput()
         opt_inp.code_type='optimization'
         opt_inp.opt_pop_size=opt_pop_size
@@ -67,19 +55,48 @@ def optimizationcode(request):
         alldic=[dic_jaya,dic_rao,dic_rao2,dic_rao3] #,dic_rao,dic_rao2
         alldic={'alldic':alldic}
         
-        #Send mail
-        email='lastyearproj123@gmail.com'
-        email2=recipient_email
-        password='Lastyearproj@123'
+
+        fromaddr = "lastyearproj123@gmail.com"
+        toaddr = recipient_email
+        msg = MIMEMultipart() 
+        msg['From'] = fromaddr 
+        msg['To'] = toaddr 
+        msg['Subject'] = "Optimization Results"
         now = datetime.now()
         message='Mail From Main Container\n'+str(dic_jaya['algoname'])+'     '+str(dic_jaya['algobest'])+'     '+str(dic_jaya['algocoordi'])+'\n'+str(dic_rao['algoname'])+'     '+str(dic_rao['algobest'])+'     '+str(dic_rao['algocoordi'])+'\n'+str(dic_rao2['algoname'])+'     '+str(dic_rao2['algobest'])+'     '+str(dic_rao2['algocoordi'])+'\n'+str(dic_rao3['algoname'])+'     '+str(dic_rao3['algobest'])+'     '+str(dic_rao3['algocoordi'])+'\n'+str(now)        
-        server = smtplib.SMTP("smtp.gmail.com",587)
-        server.starttls()
-        server.login(email,password)
+        
+        body = str(user_input_data+message)
+        msg.attach(MIMEText(body, 'plain')) 
+
+        file1 = open("Optimization_Result.txt", "a")  # append mode 
+        file1.write(user_input_data+message) 
+        file1.close() 
+
+        opfiles=["jaya.txt","rao-1.txt","rao-2.txt","rao-3.txt"]
+        data_from_containers=[jaya_container['Lines'],rao_container['Lines'],rao2_container['Lines'],rao3_container['Lines']]
+        for i in range(0,len(data_from_containers)):
+            data_to_write=data_from_containers[i]
+            file_path="/userapp/"+str(opfiles[i])
+            file1=open(file_path,'a')
+            for j in data_to_write:
+                file1.write(j)
+            file1.close()
+
+        allfiles=["Optimization_Result.txt","jaya.txt","rao-1.txt","rao-2.txt","rao-3.txt"]
+        dir_path="/userapp"
+        for f in allfiles:
+            file_path = os.path.join(dir_path, f)
+            attachment = MIMEApplication(open(file_path, "rb").read(), _subtype="txt")
+            attachment.add_header('Content-Disposition','attachment', filename=f)
+            msg.attach(attachment)
+        s = smtplib.SMTP('smtp.gmail.com', 587) 
+        s.starttls() 
+        s.login(fromaddr, "Lastyearproj@123") 
+        text = msg.as_string() 
         try:
-            server.sendmail(email,email2,message)
+            s.sendmail(fromaddr, toaddr, text) 
         except SMTPRecipientsRefused:
             pass
-        server.quit()
+        s.quit() 
 
         return render(request,'codeapp/output_optimization_containers.html',alldic)

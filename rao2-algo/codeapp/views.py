@@ -11,6 +11,7 @@ from django.http import HttpResponse
 import random
 import math
 import numpy as np
+message=''
 def rao2Algo(Max_iter,SearchAgents_no,lower_val,upper_val):
     maxfes = 500000  # Maximum functions evaluation
     dim = 4  # Number of design variables
@@ -20,7 +21,7 @@ def rao2Algo(Max_iter,SearchAgents_no,lower_val,upper_val):
     lb = lower_val * np.ones(dim)  # lower bound
     ub = upper_val * np.ones(dim)  # upper bound
 
-
+    global message
     def fitness(particle):
         y = 0
         for i in range(dim):
@@ -35,7 +36,6 @@ def rao2Algo(Max_iter,SearchAgents_no,lower_val,upper_val):
     finval = np.zeros(Max_iter) # best score of each iteration
     f1 = np.zeros(SearchAgents_no) # function value of current population
     f2 = np.zeros(SearchAgents_no) # function value of updated population
-
     for i in range(dim):
         Positions[:, i] = np.random.uniform(0,1, SearchAgents_no) * (ub[i] - lb[i]) + lb[i]
     for k in range(0,Max_iter):
@@ -56,9 +56,10 @@ def rao2Algo(Max_iter,SearchAgents_no,lower_val,upper_val):
                 worst_pos=Positions[i,:].copy()
         # Update the Position of search agents including omegas
         finval[k] = best_score
-        print("The best solution is: ",best_score , " in iteration number: ",k+1)
         Positioncopy = Positions.copy()
         r = np.random.randint(SearchAgents_no, size=1)
+        message+="The best solution is: "+str(best_score) + " in iteration number: "+str(k+1)+"\n"
+        
         for i in range(0,SearchAgents_no):
             if (f1[i] < f1[r]):
                 for j in range (0,dim):
@@ -77,7 +78,7 @@ def rao2Algo(Max_iter,SearchAgents_no,lower_val,upper_val):
                 if (f1[i] < f2[i]):
                     Positions[i,:] = Positioncopy[i,:]
     best_score = np.amin(finval)
-    print("The best solution is: ",best_score)
+    message+="The best solution is: "+str(best_score)+" pos "+str(best_pos[0])+" "+str(worst_pos[-1])
     return best_score,[best_pos[0],worst_pos[-1]]
 
 def home(request):
@@ -137,10 +138,11 @@ def check(request):
         # returnstring=str(x)
         x,y=rao2Algo(int(opt_pop_size),int(opt_gen),int(code_lb),int(code_ub))
         print('rao2 algo container'+str(' ')+str(opt_gen)+' '+str(opt_pop_size))
-        return JsonResponse({'best':str(x),'algo-coordi':str(y),'text':'Rao2 Container'})
+        
+        return JsonResponse({'best':str(x),'algo-coordi':str(y),'text':'Rao2 Container','Lines':str(message)})
     except (Exception, psycopg2.Error) as error :
         print ("Error while connecting to PostgreSQL", error)
-        return JsonResponse({'best':'Error','algo-coordi':'Error','text':'Rao2 Container'})
+        return JsonResponse({'best':'Error','algo-coordi':'Error','text':'Rao2 Container','Lines':'Error'})
     finally:
         #closing database connection.
         if(connection):
@@ -148,5 +150,5 @@ def check(request):
             connection.close()
             print("PostgreSQL connection is closed")
 
-    return JsonResponse({'best':'Error','algo-coordi':'Error','text':'Rao2 Container'})
+    return JsonResponse({'best':'Error','algo-coordi':'Error','text':'Rao2 Container','Lines':'Error'})
     # return HttpResponse('You are in container 1!!! + Result : '+str(arr))

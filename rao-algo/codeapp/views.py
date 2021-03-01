@@ -12,6 +12,7 @@ from django.http import HttpResponse
 import random
 import math
 import numpy as np
+message =''
 def raoAlgo(Max_iter,SearchAgents_no,lower_val,upper_val):
     maxfes = 500000  # Maximum functions evaluation
     dim = 4  # Number of design variables
@@ -21,7 +22,7 @@ def raoAlgo(Max_iter,SearchAgents_no,lower_val,upper_val):
     lb = lower_val * np.ones(dim)  # lower bound
     ub = upper_val * np.ones(dim)  # upper bound
 
-
+    global message
     def fitness(particle):
         y = 0
         for i in range(dim):
@@ -59,8 +60,8 @@ def raoAlgo(Max_iter,SearchAgents_no,lower_val,upper_val):
 
             # Update the Position of search agents including omegas
             finval[k] = best_score
-            # print("The best solution is: ", best_score, " in iteration number: ", k + 1)
             Positioncopy = Positions.copy()
+            
             for i in range(0, SearchAgents_no):
                 for j in range(0, dim):
                     r1 = random.random()  # r1 is a random number in [0,1]
@@ -70,7 +71,10 @@ def raoAlgo(Max_iter,SearchAgents_no,lower_val,upper_val):
             for i in range(0, SearchAgents_no):
                 if (f1[i] < f2[i]):
                     Positions[i, :] = Positioncopy[i, :]
+        message+="The best solution is: "+str( best_score)+ " in iteration number: "+str( k + 1)+"\n"
     best_score = np.amin(finval)
+    message+="The best solution is: "+str(best_score)+" pos "+str(best_pos[0])+" "+str(worst_pos[-1])
+
     return best_score,[best_pos[0],worst_pos[-1]]
 
 
@@ -133,10 +137,10 @@ def check(request):
 
         x,y=raoAlgo(int(opt_pop_size),int(opt_gen),int(code_lb),int(code_ub))
         print('rao algo container'+str(' ')+str(opt_gen)+' '+str(opt_pop_size))
-        return JsonResponse({'best':str(x),'algo-coordi':str(y),'text':'Rao1 Container'})
+        return JsonResponse({'best':str(x),'algo-coordi':str(y),'text':'Rao1 Container','Lines':str(message)})
     except (Exception, psycopg2.Error) as error :
         print ("Error while connecting to PostgreSQL", error)
-        return JsonResponse({'best':'Error connecting','algo-coordi':'Error','text':'Rao1 Container'})
+        return JsonResponse({'best':'Error connecting','algo-coordi':'Error','text':'Rao1 Container','Lines':"Error"})
     finally:
         #closing database connection.
         if(connection):
@@ -144,5 +148,6 @@ def check(request):
             connection.close()
             print("PostgreSQL connection is closed")
 
-    return JsonResponse({'best':'Error','algo-coordi':'Error','text':'Rao1 Container'})
+    return JsonResponse({'best':'Error','algo-coordi':'Error','text':'Rao1 Container','Lines':"Error"})
+
     # return HttpResponse('You are in container 1!!! + Result : '+str(arr))
