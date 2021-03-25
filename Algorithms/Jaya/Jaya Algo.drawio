@@ -1,1 +1,87 @@
-<mxfile host="app.diagrams.net" modified="2021-03-25T17:13:44.966Z" agent="5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.90 Safari/537.36" version="14.5.1" etag="dHKKP0HSnT-IYwLFhct4" type="github"><diagram id="_Yk4pc295Yobe-LPjPuy">UzV2zq1wL0osyPDNT0nNUTV2VTV2LsrPL4GwciucU3NyVI0MMlNUjV1UjYwMgFjVyA2HrCFY1qAgsSg1rwSLBiADYTaQg2Y1AA==</diagram></mxfile>
+<mxfile host="app.diagrams.net" modified="2021-03-25T17:31:19.364Z" agent="5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.90 Safari/537.36" etag="qMVVQlhAZi32K-OU3JdM" version="14.5.1" type="github">
+  <diagram id="_Yk4pc295Yobe-LPjPuy" name="Page-1">
+    <mxGraphModel dx="1767" dy="711" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="4flrV8IFS3gIoAMgm7GJ-14" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="4flrV8IFS3gIoAMgm7GJ-1" target="4flrV8IFS3gIoAMgm7GJ-2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="4flrV8IFS3gIoAMgm7GJ-1" value="Initialize population size, number of design variables and termination criterion" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="350" y="20" width="230" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="4flrV8IFS3gIoAMgm7GJ-15" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="4flrV8IFS3gIoAMgm7GJ-2" target="4flrV8IFS3gIoAMgm7GJ-3">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="4flrV8IFS3gIoAMgm7GJ-2" value="Identify best and worst solutions in the population" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="351" y="90" width="229" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="4flrV8IFS3gIoAMgm7GJ-16" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;" edge="1" parent="1" source="4flrV8IFS3gIoAMgm7GJ-3" target="4flrV8IFS3gIoAMgm7GJ-4">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="4flrV8IFS3gIoAMgm7GJ-3" value="Modify the solutions based on best and worst solutions&lt;br&gt;X&#39;j,k,i = Xj,k,i + r1,j,i (Xj,best,i -&amp;nbsp; │Xj,k,i│) - r2,j,i (Xj,worst,i -&amp;nbsp; │Xj,k,i│)" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="286" y="150" width="370" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="4flrV8IFS3gIoAMgm7GJ-9" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="4flrV8IFS3gIoAMgm7GJ-4" target="4flrV8IFS3gIoAMgm7GJ-8">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="4flrV8IFS3gIoAMgm7GJ-17" value="Yes" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="4flrV8IFS3gIoAMgm7GJ-9">
+          <mxGeometry x="-0.1256" y="-3" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="4flrV8IFS3gIoAMgm7GJ-19" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;" edge="1" parent="1" source="4flrV8IFS3gIoAMgm7GJ-4" target="4flrV8IFS3gIoAMgm7GJ-5">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="4flrV8IFS3gIoAMgm7GJ-20" value="No" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="4flrV8IFS3gIoAMgm7GJ-19">
+          <mxGeometry x="-0.12" y="2" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="4flrV8IFS3gIoAMgm7GJ-4" value="Is the solution corresponding to X&#39; j,k,i&lt;br&gt;better than that corresponding to X j,k,i ?" style="rhombus;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="286" y="230" width="370" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="4flrV8IFS3gIoAMgm7GJ-21" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="4flrV8IFS3gIoAMgm7GJ-5" target="4flrV8IFS3gIoAMgm7GJ-12">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="4flrV8IFS3gIoAMgm7GJ-5" value="Keep the previous solution" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="631" y="320" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="4flrV8IFS3gIoAMgm7GJ-22" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="4flrV8IFS3gIoAMgm7GJ-8">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="470" y="390" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="4flrV8IFS3gIoAMgm7GJ-8" value="Accept and replace previous solution" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="180" y="320" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="4flrV8IFS3gIoAMgm7GJ-23" value="Yes" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="4flrV8IFS3gIoAMgm7GJ-12" target="4flrV8IFS3gIoAMgm7GJ-13">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="4flrV8IFS3gIoAMgm7GJ-24" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="4flrV8IFS3gIoAMgm7GJ-12">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="350" y="100" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="170" y="440" />
+              <mxPoint x="170" y="100" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="4flrV8IFS3gIoAMgm7GJ-25" value="No" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="4flrV8IFS3gIoAMgm7GJ-24">
+          <mxGeometry x="-0.9245" y="-4" relative="1" as="geometry">
+            <mxPoint x="1" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="4flrV8IFS3gIoAMgm7GJ-12" value="Is the termination criteria satisfied?" style="rhombus;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="378.5" y="400" width="185" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="4flrV8IFS3gIoAMgm7GJ-13" value="Report the optimum solution" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="390.5" y="510" width="165" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="4flrV8IFS3gIoAMgm7GJ-26" value="Flowchart for jaya algorithm" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;" vertex="1" parent="1">
+          <mxGeometry x="370" y="560" width="160" height="20" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
