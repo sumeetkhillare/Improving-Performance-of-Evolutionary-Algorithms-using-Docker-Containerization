@@ -12,3 +12,5 @@ Run this after postgres ready to accept connections<br/>
 docker exec -it main-container bash migrations.sh<br/>
 For Superuser<br/>
 docker exec -it main-container bash super.sh<br/>
+For changing equations<br/>
+python3 run.py<br/>
