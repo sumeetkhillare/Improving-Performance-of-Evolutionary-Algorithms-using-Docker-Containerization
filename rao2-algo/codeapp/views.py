@@ -20,11 +20,13 @@ def rao2Algo(Max_iter,SearchAgents_no,lower_val,upper_val):
     # Max_iter = 100
     lb = lower_val * np.ones(dim)  # lower bound
     ub = upper_val * np.ones(dim)  # upper bound
-    var1=[]
-    lenvar=4
+
     global message
-    def fitness(x):
-        return (x[0]**2)-(x[1]**3)+(x[2]**2)+(x[3]**2)
+    def fitness(particle):
+        y = 0
+        for i in range(dim):
+            y = y*y - particle[i] ** 2  # sphere function
+        return y
 
 
     Positions = np.zeros((SearchAgents_no, dim)) # search agent position
@@ -49,9 +51,6 @@ def rao2Algo(Max_iter,SearchAgents_no,lower_val,upper_val):
             if f1[i] < best_score :
                 best_score=f1[i].copy(); # Update best
                 best_pos=Positions[i,:].copy()
-                var1.clear()
-                for val in range(0,lenvar):
-                    var1.append(Positions[i,:][val])
             if f1[i] > worst_score :
                 worst_score=f1[i].copy(); # Update worst
                 worst_pos=Positions[i,:].copy()
@@ -80,7 +79,7 @@ def rao2Algo(Max_iter,SearchAgents_no,lower_val,upper_val):
                     Positions[i,:] = Positioncopy[i,:]
     best_score = np.amin(finval)
     message+="The best solution is: "+str(best_score)+" pos "+str(best_pos[0])+" "+str(worst_pos[-1])
-    return best_score,[var1[0],var1[1],var1[2],var1[3]]
+    return best_score,[best_pos[0],worst_pos[-1]]
 
 def home(request):
     return render(request,'codeapp/home.html')

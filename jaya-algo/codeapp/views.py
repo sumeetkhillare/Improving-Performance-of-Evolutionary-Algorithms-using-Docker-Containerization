@@ -16,7 +16,7 @@ def myobj(p1):
     F=[]
     for i in range (len(p1)):
         x = p1.loc[i]
-        f=(x[0]**2)-(x[1]**3)+(x[2]**2)+(x[3]**2)
+        f = x[0]**2-x[1]**2
         F.append(f)
     return F
 
@@ -98,8 +98,8 @@ def main(pop_size1,Gen1,lower_val,upper_val):
 
     global lb
     global ub 
-    lb=[lower_val,lower_val,lower_val,lower_val]
-    ub=[upper_val,upper_val,upper_val,upper_val]
+    lb=[lower_val,lower_val]
+    ub=[upper_val,upper_val]
     best,xbest = jaya(pop_size1, Gen1, lb, ub)
     print('The objective function value = {}'.format(best))
     print('The optimum values of variables = {}'.format(xbest))
@@ -175,4 +175,6 @@ def check(request):
 
     return JsonResponse({'best':'Error','algo-coordi':'Error','text':'Jaya Container','Lines':'error'})
     # return HttpResponse('You are in container 1!!! + Result : '+str(arr))
+
+
 
