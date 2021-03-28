@@ -1,8 +1,0 @@
-version: '3'
-services:
-  farmers-friend:
-    restart: always
-    build: ./
-    ports:
-      - "8000:8000"
-    container_name: Farmers-Friend

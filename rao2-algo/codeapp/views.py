@@ -14,28 +14,28 @@ import numpy as np
 message=''
 def rao2Algo(Max_iter,SearchAgents_no,lower_val,upper_val):
     maxfes = 500000  # Maximum functions evaluation
-    dim = 4  # Number of design variables
+    lenvar=4#changelenvar
     # SearchAgents_no = 10  # Population size
     # Max_iter = math.floor(maxfes / SearchAgents_no)  # Maximum number of iterations
     # Max_iter = 100
-    lb = lower_val * np.ones(dim)  # lower bound
-    ub = upper_val * np.ones(dim)  # upper bound
+    lb = lower_val * np.ones(lenvar)  # lower bound
+    ub = upper_val * np.ones(lenvar)  # upper bound
     var1=[]
-    lenvar=4
     global message
     
+    
     def fitness(x):
-        return (x[0]**2)-(x[1]**3)+(x[2]**2)+(x[3]**2)
+        return (x[0]**2)-(x[1]**3)+(x[2]**2)+(x[3]**2)#changeequation
 
 
-    Positions = np.zeros((SearchAgents_no, dim)) # search agent position
-    best_pos = np.zeros(dim) # search agent's best position
-    worst_pos = np.zeros(dim) # search agent's worst position
+    Positions = np.zeros((SearchAgents_no, lenvar)) # search agent position
+    best_pos = np.zeros(lenvar) # search agent's best position
+    worst_pos = np.zeros(lenvar) # search agent's worst position
 
     finval = np.zeros(Max_iter) # best score of each iteration
     f1 = np.zeros(SearchAgents_no) # function value of current population
     f2 = np.zeros(SearchAgents_no) # function value of updated population
-    for i in range(dim):
+    for i in range(lenvar):
         Positions[:, i] = np.random.uniform(0,1, SearchAgents_no) * (ub[i] - lb[i]) + lb[i]
     for k in range(0,Max_iter):
         best_score = float("inf")
@@ -43,7 +43,7 @@ def rao2Algo(Max_iter,SearchAgents_no,lower_val,upper_val):
         for i in range(0,SearchAgents_no):
 
             # Return back the search agents that go beyond the boundaries of the search space
-            for j in range(dim):
+            for j in range(lenvar):
                 Positions[i,j]=np.clip(Positions[i,j], lb[j], ub[j])
 
             f1[i]= fitness(Positions[i,:])
@@ -64,13 +64,13 @@ def rao2Algo(Max_iter,SearchAgents_no,lower_val,upper_val):
         
         for i in range(0,SearchAgents_no):
             if (f1[i] < f1[r]):
-                for j in range (0,dim):
+                for j in range (0,lenvar):
                     r1=random.random() # r1 is a random number in [0,1]
                     r2=random.random() # r1 is a random number in [0,1]
                     Positions[i,j]= Positions[i,j] + r1*(best_pos[j]-worst_pos[j]) + r2*(np.abs(Positions[i,j])-np.abs(Positions[r,j]))#change in position
                     Positions[i,j]=np.clip(Positions[i,j], lb[j], ub[j])
             else :
-                for j in range (0,dim):
+                for j in range (0,lenvar):
                     r1=random.random() # r1 is a random number in [0,1]
                     r2=random.random() # r1 is a random number in [0,1]
                     Positions[i,j]= Positions[i,j] + r1*(best_pos[j]-worst_pos[j]) + r2*(np.abs(Positions[r,j])-np.abs(Positions[i,j]))#change in position
@@ -81,7 +81,7 @@ def rao2Algo(Max_iter,SearchAgents_no,lower_val,upper_val):
                     Positions[i,:] = Positioncopy[i,:]
     best_score = np.amin(finval)
     message+="The best solution is: "+str(best_score)+" pos "+str(best_pos[0])+" "+str(worst_pos[-1])
-    return best_score,[var1[0],var1[1],var1[2],var1[3]]
+    return best_score,var1
 
 def home(request):
     return render(request,'codeapp/home.html')

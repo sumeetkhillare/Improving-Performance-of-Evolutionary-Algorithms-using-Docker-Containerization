@@ -1,60 +1,42 @@
 import os
-lb_list=[-10,-10,-10,-10]
-ub_list=[10,10,10,10]
 
-rao1_algo_coordi=78
-rao2_algo_coordi=83
-rao3_algo_coordi=87
-rao_coordinates="    return best_score,[var1[0],var1[1],var1[2],var1[3]]\n"
+#Default equation
+user_eq="(x[0]**2)-(x[1]**3)+(x[2]**2)+(x[3]**2)#changeequation"
 
-def replace(filename,strreplace,line_no):
+#Defalut variables length for rao algo
+rao_lenvar="    lenvar=4#changelenvar\n"
+
+#Function to find and replace in file
+def findandreplace(filename,originalstr,replacestr):
   reading_file = open(filename, "r")
   data=reading_file.readlines()
-  data[line_no]= strreplace
+  for i in range(0,len(data)):
+    if originalstr in data[i]:
+      data[i]=replacestr
   writing_file = open(filename,'w')
   writing_file.writelines(data) 
   reading_file.close()
   writing_file.close()
 
-
-
-user_eq="(x[0]**2)-(x[1]**3)+(x[2]**2)+(x[3]**2)"
+#Jaya algo files cleanup
+lb_list="lower_val,lower_val,lower_val,lower_val"
+ub_list="upper_val,upper_val,upper_val,upper_val"
 filename="./jaya-algo/codeapp/views.py"
 eq="        f="+user_eq+"\n"
-lbeq="    lb="+str(lb_list)+"\n"
-ubeq="    ub="+str(ub_list)+"\n"
-replace(filename,eq,18)
-replace(filename,lbeq,100)
-replace(filename,ubeq,101)
+lbeq="    lb=["+str(lb_list)+"]#changelb\n"
+ubeq="    ub=["+str(ub_list)+"]#changeub\n"
+findandreplace(filename,"#changeequation",eq)
+findandreplace(filename,"#changelb",lbeq)
+findandreplace(filename,"#changeub",ubeq)
 
-filename="./rao-algo/codeapp/views.py"
+#Rao algo files cleanup
 eq="        return "+user_eq+"\n"
-replace(filename,eq,27)
-
-
-filename="./rao2-algo/codeapp/views.py"
-eq="        return "+user_eq+"\n"
-replace(filename,eq,27)
-
-
-
-filename="./rao3-algo/codeapp/views.py"
-eq="        return "+user_eq+"\n"
-replace(filename,eq,27)
-
-
-filename="./rao-algo/codeapp/views.py"
-replace(filename,rao_coordinates,rao1_algo_coordi)
-
-filename="./rao2-algo/codeapp/views.py"
-replace(filename,rao_coordinates,rao2_algo_coordi)
-
-filename="./rao3-algo/codeapp/views.py"
-replace(filename,rao_coordinates,rao3_algo_coordi)
-
-
-
-
+raofilenames=["./rao-algo/codeapp/views.py","./rao2-algo/codeapp/views.py","./rao3-algo/codeapp/views.py"]
+for filename in raofilenames:
+  findandreplace(filename,'#changelenvar',"    lenvar=4#changelenvar\n")
+  findandreplace(filename,"#changeequation",eq)
+    
+#Removing docker containers
 os.system('docker-compose down')
 
 

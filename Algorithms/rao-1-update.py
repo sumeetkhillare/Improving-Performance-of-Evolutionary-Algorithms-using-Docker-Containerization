@@ -6,14 +6,14 @@ import math
 import numpy as np
 
 maxfes = 500000  # Maximum functions evaluation
-dim = 30  # Number of design variables
+dim = 10  # Number of design variables
 SearchAgents_no = 20  # Population size
 #Max_iter = math.floor(maxfes / SearchAgents_no)  # Maximum number of iterations
 Max_iter = 100
 lb = -10 * np.ones(dim)  # lower bound
 ub = 10 * np.ones(dim)  # upper bound
 var1=[]
-lenvar=4
+lenvar=10
 
 def fitness(x):
     y = 0
@@ -21,8 +21,8 @@ def fitness(x):
 #     for i in range(dim):
 #         y = y + particle[i] ** 2  # sphere function
   
-    return (x[0]**2)-(x[1]**3)+(x[2]**2)+(x[3]**2)
-
+    # return ((1 - x[4])**2) + ((1 - x[5])**2) + ((1 - x[6])**2) - (1 + x[7]) + ((1 - x[1])**2) + ((2 - x[2])**2) + ((3 - x[3])**2)
+    return (x[0]**3)-(x[1]**2)+(x[2]**2)+(x[3]**4)-(x[4]**5)+(x[5]**2)-(x[6]**7)+(x[7]**2)+(x[8])+(x[9]**2)
     
 
 
@@ -77,6 +77,7 @@ for k in range(0, Max_iter):
     # print(Positions[-1])
 # print(Positions[i,:])
 # print(Positioncopy[i, :])
+
 print(var1)
 best_score = np.amin(finval)
 print("The best solution is: ", best_score)

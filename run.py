@@ -1,111 +1,70 @@
 import os
 import re
 
-jaya_algo_eq=18
-jaya_algo_lb=100
-jaya_algo_ub=101
-rao1_algo_eq=27
-rao2_algo_eq=27
-rao3_algo_eq=27
-rao1_algo_coordi=78
-rao2_algo_coordi=83
-rao3_algo_coordi=87
-
-rao_coordinates="    return best_score,["
-
-
-def createListForRao(r1, r2):
-  if (r1 == r2):
-    return r1
-  else:
-    res = []
-    while(r1 < r2+1 ):
-      res.append(r1)
-      r1 += 1
-    return res
-
-def replace(filename,strreplace,line_no):
+#Function to find and replace in files
+def findandreplace(filename,originalstr,replacestr):
   reading_file = open(filename, "r")
   data=reading_file.readlines()
-  data[line_no]= strreplace
+  for i in range(0,len(data)):
+    if originalstr in data[i]:
+      data[i]=replacestr
   writing_file = open(filename,'w')
   writing_file.writelines(data) 
   reading_file.close()
   writing_file.close()
 
-
-def createList(lb, ub,n):
-  lb_list=[]
-  ub_list=[]
+#Function to create lb,ub for jaya file replace
+def createList(n):
+  lb_list=''
+  ub_list=''
   for i in range(0,n):
-    lb_list.append(lb)
-    ub_list.append(ub)
+    lb_list+=("lower_val")
+    ub_list+=("upper_val")
+    if i != n-1:
+      lb_list+=","
+      ub_list+=","
   return lb_list,ub_list
 
 
 os.system('python3 ./cleanup.py')
 
+#Input no of variables from user
 no_variables = int(input("[+] Input no of variables [Press 0 for default]: "))
 print()
 if no_variables==0:
+  #Use default equation
   user_eq="(x[0]**2)-(x[1]**3)+(x[2]**2)+(x[3]**2)"
-  user_lb=-10
-  user_ub=10
+  
 else:
+  #Input equation from user
   user_eq = str(input("[+] Input equation ex- (x[0]**2)-(x[1]**3)+(x[2]**2)+(x[3]**2) : "))
   print()
-  user_lb = int(input("[+] Input lower bound: "))
-  print()
-  user_ub = int(input("[+] Input upper bound: "))
 
-  lis=createListForRao(0,(no_variables-1))
-  for i in lis:
-    rao_coordinates+="var1["+str(i)+"]"
-    if i != len(lis)-1:
-      rao_coordinates+=","
-  rao_coordinates+="]\n"
-
-  lb_list,ub_list=createList(user_lb,user_ub,no_variables)
+  #Replace in rao algo files
+  rao_lenvar="    lenvar="
+  eq="        return "+user_eq+"#changeequation\n"
+  raofilenames=["./rao-algo/codeapp/views.py","./rao2-algo/codeapp/views.py","./rao3-algo/codeapp/views.py"]
+  for filename in raofilenames:
+    findandreplace(filename,'#changelenvar',"    lenvar="+str(no_variables)+"#changelenvar\n")
+    findandreplace(filename,"#changeequation",eq)
+    
+  #Replace in jaya algo files
+  lb_list,ub_list=createList(no_variables)
   filename="./jaya-algo/codeapp/views.py"
-  eq="        f="+user_eq+"\n"
-  lbeq="    lb="+str(lb_list)+"\n"
-  ubeq="    ub="+str(ub_list)+"\n"
-  replace(filename,eq,jaya_algo_eq)
-  replace(filename,lbeq,jaya_algo_lb)
-  replace(filename,ubeq,jaya_algo_ub)
+  eq="        f="+user_eq+"#changeequation\n"
+  lbeq="    lb=["+str(lb_list)+"]#changelb\n"
+  ubeq="    ub=["+str(ub_list)+"]#changeub\n"
+  findandreplace(filename,"#changeequation",eq)
+  findandreplace(filename,"#changelb",lbeq)
+  findandreplace(filename,"#changeub",ubeq)
 
 
-  filename="./rao-algo/codeapp/views.py"
-  eq="        return "+user_eq+"\n"
-  replace(filename,eq,rao1_algo_eq)
-
-  filename="./rao-algo/codeapp/views.py"
-  replace(filename,rao_coordinates,rao1_algo_coordi)
-
-  filename="./rao2-algo/codeapp/views.py"
-  eq="        return "+user_eq+"\n"
-  replace(filename,eq,rao2_algo_eq)
-
-
-  filename="./rao2-algo/codeapp/views.py"
-  replace(filename,rao_coordinates,rao2_algo_coordi)
-
-  filename="./rao3-algo/codeapp/views.py"
-  eq="        return "+user_eq+"\n"
-  replace(filename,eq,rao3_algo_eq)
-
-
-  filename="./rao3-algo/codeapp/views.py"
-  replace(filename,rao_coordinates,rao3_algo_coordi)
-
-
-
-print("[-] Starting Containers for "+ user_eq + " with lower bound: "+ str(user_lb) +" and upper bound: "+ str(user_ub)+"\n")
-
-
-
+#Start containers
+print("[-] Starting Containers for "+ user_eq + "\n")
 os.system('docker-compose up --build')
 
+#Cleanup system
 print("\n[-] Cleaning up your system please wait\n")
 os.system('python3 ./cleanup.py')
 
+#(x[0]**3)-(x[1]**2)+(x[2]**2)+(x[3]**4)-(x[4]**5)+(x[5]**2)-(x[6]**7)+(x[7]**2)+(x[8])+(x[9]**2)
