@@ -136,7 +136,8 @@ def check(request):
         
 
 
-        x,y=raoAlgo(int(opt_pop_size),int(opt_gen),int(code_lb),int(code_ub))
+        # x,y=raoAlgo(int(opt_pop_size),int(opt_gen),int(code_lb),int(code_ub))
+        x,y=raoAlgo(int(opt_gen),int(opt_pop_size),int(code_lb),int(code_ub))
         print('rao algo container'+str(' ')+str(opt_gen)+' '+str(opt_pop_size))
         return JsonResponse({'best':str(x),'algo-coordi':str(y),'text':'Rao1 Container','Lines':str(message)})
     except (Exception, psycopg2.Error) as error :

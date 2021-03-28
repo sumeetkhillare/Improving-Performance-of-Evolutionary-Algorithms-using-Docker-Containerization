@@ -138,7 +138,8 @@ def check(request):
         # Print PostgreSQL Connection properties
         # x=str(main(int(opt_pop_size),int(opt_gen)))+str(' ')+str(opt_gen)+' '+str(opt_pop_size)
         # returnstring=str(x)
-        x,y=rao2Algo(int(opt_pop_size),int(opt_gen),int(code_lb),int(code_ub))
+        # x,y=rao2Algo(int(opt_pop_size),int(opt_gen),int(code_lb),int(code_ub))
+        x,y=rao2Algo(int(opt_gen),int(opt_pop_size),int(code_lb),int(code_ub))
         print('rao2 algo container'+str(' ')+str(opt_gen)+' '+str(opt_pop_size))
         
         return JsonResponse({'best':str(x),'algo-coordi':str(y),'text':'Rao2 Container','Lines':str(message)})

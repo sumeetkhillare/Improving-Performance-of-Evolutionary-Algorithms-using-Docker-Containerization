@@ -143,7 +143,8 @@ def check(request):
         
 
 
-        x,y=rao3Algo(int(opt_pop_size),int(opt_gen),int(code_lb),int(code_ub))
+        # x,y=rao3Algo(int(opt_pop_size),int(opt_gen),int(code_lb),int(code_ub))
+        x,y=rao3Algo(int(opt_gen),int(opt_pop_size),int(code_lb),int(code_ub))
         print('rao algo container'+str(' ')+str(opt_gen)+' '+str(opt_pop_size))
 
         

@@ -9,10 +9,21 @@ from email.mime.text import MIMEText
 from email.mime.base import MIMEBase 
 from email import encoders 
 from smtplib import SMTPRecipientsRefused
-
+import time
+import threading
 import os
 from email.mime.multipart import MIMEMultipart
 from email.mime.application import MIMEApplication
+import datetime
+jaya_container=''
+rao_container=''
+rao2_container=''
+rao3_container=''
+jaya_time=0
+rao_time=0
+rao2_time=0
+rao3_time=0
+
 
 
 from datetime import datetime
@@ -28,6 +39,44 @@ def test(request):
     for i in code_input:
         s+=str(i['codeinput'])+"    "+str(i['code_type'])+"    "
     return HttpResponse(str(s))
+
+def jaya_container_req():
+    global jaya_container
+    global jaya_time
+    start = time.time()
+    jaya_container=requests.get('http://jaya-algo:8000/check/').json()
+    end=time.time()
+    jaya_time=str(end-start)
+    return jaya_container
+
+def rao_container_req():
+    global rao_container
+    global rao_time
+    start = time.time()
+    rao_container=requests.get('http://rao-algo:8000/check/').json()
+    end = time.time()
+    rao_time = end-start
+    return rao_container
+
+def rao2_container_req():
+    global rao2_container
+    global rao2_time
+    start=time.time()
+    rao2_container=requests.get('http://rao2-algo:8000/check/').json()
+    end=time.time()
+    rao2_time=end-start
+    return rao2_container
+
+def rao3_container_req():
+    global rao3_container
+    global rao3_time
+    start=time.time()
+    rao3_container=requests.get('http://rao3-algo:8000/check/').json()
+    end=time.time()
+    rao3_time=end-start
+    return rao3_container
+
+
 def optimizationcode(request):
     if request.method=="POST":
         opt_pop_size=request.POST['pop_size']
@@ -43,15 +92,36 @@ def optimizationcode(request):
         opt_inp.code_lb=lb
         opt_inp.code_ub=ub
         opt_inp.save()
-        jaya_container=requests.get('http://jaya-algo:8000/check/').json()
-        rao_container=requests.get('http://rao-algo:8000/check/').json()
-        rao2_container=requests.get('http://rao2-algo:8000/check/').json()
-        rao3_container=requests.get('http://rao3-algo:8000/check/').json()
+        global jaya_container
+        global rao_container
+        global rao2_container
+        global rao3_container
+        global jaya_time
+        global rao_time
+        global rao2_time
+        global rao3_time
+                
+        t1 = threading.Thread(target=jaya_container_req)
+        t2 = threading.Thread(target=rao_container_req)
+        t3 = threading.Thread(target=rao2_container_req)
+        t4 = threading.Thread(target=rao3_container_req)
+
+        t1.start()
+        t2.start()
+        t3.start()
+        t4.start()
+
+        t1.join()
+        t2.join()
+        t3.join()
+        t4.join()
+        end = time.time()
         opt_inp.delete()
-        dic_jaya={'algoname':str(jaya_container['text']),'algobest':str(jaya_container['best']),'algocoordi':str(jaya_container['algo-coordi'])}
-        dic_rao={'algoname':str(rao_container['text']),'algobest':str(rao_container['best']),'algocoordi':str(rao_container['algo-coordi'])}
-        dic_rao2={'algoname':str(rao2_container['text']),'algobest':str(rao2_container['best']),'algocoordi':str(rao2_container['algo-coordi'])}
-        dic_rao3={'algoname':str(rao3_container['text']),'algobest':str(rao3_container['best']),'algocoordi':str(rao3_container['algo-coordi'])}
+        
+        dic_jaya={'algoname':str(jaya_container['text']),'algobest':str(jaya_container['best']),'algocoordi':str(jaya_container['algo-coordi']),'algotime':str(jaya_time)}
+        dic_rao={'algoname':str(rao_container['text']),'algobest':str(rao_container['best']),'algocoordi':str(rao_container['algo-coordi']),'algotime':str(rao_time)}
+        dic_rao2={'algoname':str(rao2_container['text']),'algobest':str(rao2_container['best']),'algocoordi':str(rao2_container['algo-coordi']),'algotime':str(rao2_time)}
+        dic_rao3={'algoname':str(rao3_container['text']),'algobest':str(rao3_container['best']),'algocoordi':str(rao3_container['algo-coordi']),'algotime':str(rao3_time)}
         alldic=[dic_jaya,dic_rao,dic_rao2,dic_rao3] #,dic_rao,dic_rao2
         alldic={'alldic':alldic}
         

@@ -7,9 +7,9 @@ import numpy as np
 
 maxfes = 500000  # Maximum functions evaluation
 dim = 10  # Number of design variables
-SearchAgents_no = 20  # Population size
+SearchAgents_no = 10  # Population size
 #Max_iter = math.floor(maxfes / SearchAgents_no)  # Maximum number of iterations
-Max_iter = 100
+Max_iter = 10000
 lb = -10 * np.ones(dim)  # lower bound
 ub = 10 * np.ones(dim)  # upper bound
 var1=[]
