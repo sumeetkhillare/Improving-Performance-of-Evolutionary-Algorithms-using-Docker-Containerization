@@ -151,4 +151,4 @@ def check(request):
 
     return JsonResponse({'best':'Error','algo-coordi':'Error','text':'Rao1 Container','Lines':"Error"})
 
-    # return HttpResponse('You are in container 1!!! + Result : '+str(arr))
+    # return HttpResponse('You are in container 1!!! + Result : '+str(arr)
