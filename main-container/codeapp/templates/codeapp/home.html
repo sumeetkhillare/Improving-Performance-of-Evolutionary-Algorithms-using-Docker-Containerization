@@ -13,14 +13,14 @@
     <br>
     <form action="optimizationcode/" method="post">
         {% csrf_token %}
+    <h3>Population Size</h3>
     <input type="text" placeholder="type population size" name="pop_size">
+    <h3>Generation</h3>
     <input type="text" placeholder="type generation" name="gen">
+    <h3>Lower Bound</h3>
     <input type="text" placeholder="type lower bound" name="lb">
+    <h3>Upper Bound</h3>
     <input type="text" placeholder="type upper bound" name="ub">
-    <input type="text" placeholder="type email" name="email">
-    
-    
-    
     <button type='submit'>GO!!!</button>
     </form>
 

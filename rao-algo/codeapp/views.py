@@ -140,7 +140,7 @@ def check(request):
         x,y,z=raoAlgo(int(opt_gen),int(opt_pop_size),int(code_lb),int(code_ub))
         print('rao algo container'+str(' ')+str(opt_gen)+' '+str(opt_pop_size))
         print(str(z.tolist()))
-        return JsonResponse({'best':str(x),'algo-coordi':str(z.tolist()),'text':'Rao1 Container','Lines':z.tolist()})
+        return JsonResponse({'best':str(x),'algo-coordi':str(y),'text':'Rao1 Container','Lines':z.tolist()})
     except (Exception, psycopg2.Error) as error :
         print ("Error while connecting to PostgreSQL", error)
         return JsonResponse({'best':'Error connecting','algo-coordi':'Error','text':'Rao1 Container','Lines':"Error"})

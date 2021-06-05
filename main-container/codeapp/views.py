@@ -168,7 +168,6 @@ def optimizationcode(request):
         opt_gen=request.POST['gen']
         lb=request.POST['lb']
         ub=request.POST['ub']
-        recipient_email=request.POST['email']
         user_input_data="Population Size: "+str(opt_pop_size)+"\n"+"Generations: "+str(opt_gen)+"\n"+"Lower bound: "+str(lb)+"\n"+"Upper bound: "+str(ub)+"\n"
         opt_inp=OptimizationCodeInput()
         opt_inp.code_type='optimization'

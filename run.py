@@ -68,3 +68,6 @@ print("\n[-] Cleaning up your system please wait\n")
 os.system('python3 ./cleanup.py')
 
 #(x[0]**3)-(x[1]**2)+(x[2]**2)+(x[3]**4)-(x[4]**5)+(x[5]**2)-(x[6]**7)+(x[7]**2)+(x[8])+(x[9]**2)
+
+# 7.5*x[7] + 5.5*x[8] + 7*x[5] + 6*x[6] + 5*(x[1] + x[2])
+# x[1]+x[2]+x[3]+x[4]+x[5]+x[6]*x[7]
