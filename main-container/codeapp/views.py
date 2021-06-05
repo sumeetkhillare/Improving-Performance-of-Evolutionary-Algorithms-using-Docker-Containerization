@@ -1,5 +1,6 @@
 from django.shortcuts import render
 import requests
+import random
 from django.http import HttpResponse
 import json
 from .models import CodeInput,OptimizationCodeInput
@@ -12,6 +13,7 @@ from smtplib import SMTPRecipientsRefused
 import time
 import threading
 import os
+import numpy as np
 from email.mime.multipart import MIMEMultipart
 from email.mime.application import MIMEApplication
 import datetime
@@ -24,7 +26,7 @@ rao_time=0
 rao2_time=0
 rao3_time=0
 
-
+message =''
 
 from datetime import datetime
 def home(request):
@@ -77,6 +79,88 @@ def rao3_container_req():
     return rao3_container
 
 
+def rao3Algo(Max_iter,SearchAgents_no,lower_val,upper_val,received_position):
+    
+    
+    
+    
+    global message
+    
+    
+    lenvar=4#changelenvar
+    # SearchAgents_no = 10 #Population size
+    # Max_iter = math.floor(maxfes/SearchAgents_no) #Maximum number of iterations
+    lb = lower_val*np.ones(lenvar) #lower bound
+    ub = upper_val*np.ones(lenvar) #upper bound
+    var1=[]
+    
+    
+    
+    def fitness(x):
+        return (x[0]**2)-(x[1]**3)+(x[2]**2)+(x[3]**2)#changeequation
+    # Positions = np.zeros((SearchAgents_no, lenvar)) # search agent position
+    Positions=received_position
+    best_pos = np.zeros(lenvar) # search agent's best position
+    worst_pos = np.zeros(lenvar) # search agent's worst position
+
+    finval = np.zeros(Max_iter) # best score of each iteration
+    f1 = np.zeros(SearchAgents_no) # function value of current population
+    f2 = np.zeros(SearchAgents_no) # function value of updated population
+
+    for i in range(lenvar):
+        Positions[:, i] = np.random.uniform(0,1, SearchAgents_no) * (ub[i] - lb[i]) + lb[i]
+    for k in range(0,Max_iter):
+        best_score = float("inf")
+        worst_score = float("-inf")
+        for i in range(0,SearchAgents_no):
+
+            # Return back the search agents that go beyond the boundaries of the search space
+            for j in range(lenvar):
+                Positions[i,j]=np.clip(Positions[i,j], lb[j], ub[j])
+
+            f1[i]= fitness(Positions[i,:])
+            if f1[i] < best_score :
+                best_score=f1[i].copy(); # Update best
+                best_pos=Positions[i,:].copy()
+                var1.clear()
+                for val in range(0,lenvar):
+                    var1.append(Positions[i,:][val])
+            if f1[i] > worst_score :
+                worst_score=f1[i].copy(); # Update worst
+                worst_pos=Positions[i,:].copy()
+            # Update the Position of search agents including omegas
+            finval[k] = best_score
+            Positioncopy = Positions.copy()
+            r = np.random.randint(SearchAgents_no, size=1)
+            
+            for i in range(0,SearchAgents_no):
+                if (f1[i] < f1[r]):
+                    for j in range (0,lenvar):
+                        r1=random.random() # r1 is a random number in [0,1]
+                        r2=random.random() # r1 is a random number in [0,1]
+                        Positions[i,j]= Positions[i,j] + r1*(best_pos[j]-np.abs(worst_pos[j])) + r2*(np.abs(Positions[i,j])-Positions[i
+                        ,j])#change in position
+                        Positions[i,j]=np.clip(Positions[i,j], lb[j], ub[j])
+                else :
+                    for j in range (0,lenvar):
+                        r1=random.random() # r1 is a random number in [0,1]
+                        r2=random.random() # r1 is a random number in [0,1]
+                        Positions[i,j]= Positions[i,j] + r1*(best_pos[j]-np.abs(worst_pos[j])) + r2*(np.abs(Positions[r,j])-Positions[i,j]) #change in position
+                        Positions[i,j]=np.clip(Positions[i,j], lb[j], ub[j])
+                        f2[i] = fitness(Positions[i,:])
+
+            for i in range(0,SearchAgents_no):
+                if (f1[i] < f2[i]):
+                    Positions[i,:] = Positioncopy[i,:]
+        message+="The best solution is: "+str(best_score) + " in iteration number: "+str(k+1)+"\n"
+    
+    best_score = np.amin(finval)
+    message+="The best solution is: "+str(best_score)+" pos "+str(best_pos[0])+" "+str(worst_pos[-1])
+    
+
+    return best_score,var1
+
+
 def optimizationcode(request):
     if request.method=="POST":
         opt_pop_size=request.POST['pop_size']
@@ -125,40 +209,43 @@ def optimizationcode(request):
         alldic=[dic_jaya,dic_rao,dic_rao2,dic_rao3] #,dic_rao,dic_rao2
         alldic={'alldic':alldic}
         
+        output=rao3Algo(10, 10, -10, 10, (np.array(rao_container['Lines'])))
+        print(output)
+        # print((np.array(rao_container['Lines'])))
 
-        fromaddr = "lastyearproj123@gmail.com"
-        toaddr = recipient_email
-        msg = MIMEMultipart() 
-        msg['From'] = fromaddr 
-        msg['To'] = toaddr 
-        msg['Subject'] = "Optimization Results"
-        now = datetime.now()
-        message='Mail From Main Container\n'+str(dic_jaya['algoname'])+'     '+str(dic_jaya['algobest'])+'     '+str(dic_jaya['algocoordi'])+'\n'+str(dic_rao['algoname'])+'     '+str(dic_rao['algobest'])+'     '+str(dic_rao['algocoordi'])+'\n'+str(dic_rao2['algoname'])+'     '+str(dic_rao2['algobest'])+'     '+str(dic_rao2['algocoordi'])+'\n'+str(dic_rao3['algoname'])+'     '+str(dic_rao3['algobest'])+'     '+str(dic_rao3['algocoordi'])+'\n'+str(now)        
+        # fromaddr = "lastyearproj123@gmail.com"
+        # toaddr = recipient_email
+        # msg = MIMEMultipart() 
+        # msg['From'] = fromaddr 
+        # msg['To'] = toaddr 
+        # msg['Subject'] = "Optimization Results"
+        # now = datetime.now()
+        # message='Mail From Main Container\n'+str(dic_jaya['algoname'])+'     '+str(dic_jaya['algobest'])+'     '+str(dic_jaya['algocoordi'])+'\n'+str(dic_rao['algoname'])+'     '+str(dic_rao['algobest'])+'     '+str(dic_rao['algocoordi'])+'\n'+str(dic_rao2['algoname'])+'     '+str(dic_rao2['algobest'])+'     '+str(dic_rao2['algocoordi'])+'\n'+str(dic_rao3['algoname'])+'     '+str(dic_rao3['algobest'])+'     '+str(dic_rao3['algocoordi'])+'\n'+str(now)        
         
-        body = str(user_input_data+message)
-        msg.attach(MIMEText(body, 'plain')) 
+        # body = str(user_input_data+message)
+        # msg.attach(MIMEText(body, 'plain')) 
 
-        file1 = open("Optimization_Result.txt", "a")  # append mode 
-        file1.write(user_input_data+message) 
-        file1.close() 
+        # file1 = open("Optimization_Result.txt", "a")  # append mode 
+        # file1.write(user_input_data+message) 
+        # file1.close() 
 
-        opfiles=["jaya.txt","rao-1.txt","rao-2.txt","rao-3.txt"]
-        data_from_containers=[jaya_container['Lines'],rao_container['Lines'],rao2_container['Lines'],rao3_container['Lines']]
-        for i in range(0,len(data_from_containers)):
-            data_to_write=data_from_containers[i]
-            file_path="/userapp/"+str(opfiles[i])
-            file1=open(file_path,'a')
-            for j in data_to_write:
-                file1.write(j)
-            file1.close()
+        # opfiles=["jaya.txt","rao-1.txt","rao-2.txt","rao-3.txt"]
+        # data_from_containers=[jaya_container['Lines'],rao_container['Lines'],rao2_container['Lines'],rao3_container['Lines']]
+        # for i in range(0,len(data_from_containers)):
+        #     data_to_write=data_from_containers[i]
+        #     file_path="/userapp/"+str(opfiles[i])
+        #     file1=open(file_path,'a')
+        #     for j in data_to_write:
+        #         file1.write(j)
+        #     file1.close()
 
-        allfiles=["Optimization_Result.txt","jaya.txt","rao-1.txt","rao-2.txt","rao-3.txt"]
-        dir_path="/userapp"
-        for f in allfiles:
-            file_path = os.path.join(dir_path, f)
-            attachment = MIMEApplication(open(file_path, "rb").read(), _subtype="txt")
-            attachment.add_header('Content-Disposition','attachment', filename=f)
-            msg.attach(attachment)
+        # allfiles=["Optimization_Result.txt","jaya.txt","rao-1.txt","rao-2.txt","rao-3.txt"]
+        # dir_path="/userapp"
+        # for f in allfiles:
+        #     file_path = os.path.join(dir_path, f)
+        #     attachment = MIMEApplication(open(file_path, "rb").read(), _subtype="txt")
+        #     attachment.add_header('Content-Disposition','attachment', filename=f)
+        #     msg.attach(attachment)
         # s = smtplib.SMTP('smtp.gmail.com', 587) 
         # s.starttls() 
         # s.login(fromaddr, "Lastyearproj@123") 
