@@ -159,14 +159,14 @@ def optimizationcode(request):
             attachment = MIMEApplication(open(file_path, "rb").read(), _subtype="txt")
             attachment.add_header('Content-Disposition','attachment', filename=f)
             msg.attach(attachment)
-        s = smtplib.SMTP('smtp.gmail.com', 587) 
-        s.starttls() 
-        s.login(fromaddr, "Lastyearproj@123") 
-        text = msg.as_string() 
-        try:
-            s.sendmail(fromaddr, toaddr, text) 
-        except SMTPRecipientsRefused:
-            pass
-        s.quit() 
+        # s = smtplib.SMTP('smtp.gmail.com', 587) 
+        # s.starttls() 
+        # s.login(fromaddr, "Lastyearproj@123") 
+        # text = msg.as_string() 
+        # try:
+        #     s.sendmail(fromaddr, toaddr, text) 
+        # except SMTPRecipientsRefused:
+        #     pass
+        # s.quit() 
 
         return render(request,'codeapp/output_optimization_containers.html',alldic)
