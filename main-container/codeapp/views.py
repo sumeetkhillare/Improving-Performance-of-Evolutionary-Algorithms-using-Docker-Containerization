@@ -83,7 +83,7 @@ def rao3Algo(Max_iter,SearchAgents_no,lower_val,upper_val,received_position):
     
     
     
-    
+    start = time.time()
     global message
     
     
@@ -157,8 +157,9 @@ def rao3Algo(Max_iter,SearchAgents_no,lower_val,upper_val,received_position):
     best_score = np.amin(finval)
     message+="The best solution is: "+str(best_score)+" pos "+str(best_pos[0])+" "+str(worst_pos[-1])
     
-
-    return best_score,var1
+    end=time.time()
+    calculated_time=str(end-start)
+    return best_score,var1,calculated_time
 
 
 def optimizationcode(request):
@@ -188,72 +189,25 @@ def optimizationcode(request):
         t1 = threading.Thread(target=jaya_container_req)
         t2 = threading.Thread(target=rao_container_req)
         t3 = threading.Thread(target=rao2_container_req)
-        t4 = threading.Thread(target=rao3_container_req)
-
+        
         t1.start()
         t2.start()
         t3.start()
-        t4.start()
-
+        
         t1.join()
         t2.join()
         t3.join()
-        t4.join()
         end = time.time()
         opt_inp.delete()
         
         dic_jaya={'algoname':str(jaya_container['text']),'algobest':str(jaya_container['best']),'algocoordi':str(jaya_container['algo-coordi']),'algotime':str(jaya_time)}
         dic_rao={'algoname':str(rao_container['text']),'algobest':str(rao_container['best']),'algocoordi':str(rao_container['algo-coordi']),'algotime':str(rao_time)}
         dic_rao2={'algoname':str(rao2_container['text']),'algobest':str(rao2_container['best']),'algocoordi':str(rao2_container['algo-coordi']),'algotime':str(rao2_time)}
-        dic_rao3={'algoname':str(rao3_container['text']),'algobest':str(rao3_container['best']),'algocoordi':str(rao3_container['algo-coordi']),'algotime':str(rao3_time)}
+        
+        concat=np.concatenate((np.array(jaya_container['Lines']),np.array(rao_container['Lines']),np.array(jaya_container['Lines'])),axis=0)
+        best_score,coordinate,calc_time=rao3Algo(10, 30, -10, 10, concat)
+        dic_rao3={'algoname':str("Rao3 Final Output"),'algobest':str(best_score),'algocoordi':str(coordinate),'algotime':str(calc_time)}
         alldic=[dic_jaya,dic_rao,dic_rao2,dic_rao3] #,dic_rao,dic_rao2
         alldic={'alldic':alldic}
         
-        output=rao3Algo(10, 10, -10, 10, (np.array(rao_container['Lines'])))
-        print(output)
-        # print((np.array(rao_container['Lines'])))
-
-        # fromaddr = "lastyearproj123@gmail.com"
-        # toaddr = recipient_email
-        # msg = MIMEMultipart() 
-        # msg['From'] = fromaddr 
-        # msg['To'] = toaddr 
-        # msg['Subject'] = "Optimization Results"
-        # now = datetime.now()
-        # message='Mail From Main Container\n'+str(dic_jaya['algoname'])+'     '+str(dic_jaya['algobest'])+'     '+str(dic_jaya['algocoordi'])+'\n'+str(dic_rao['algoname'])+'     '+str(dic_rao['algobest'])+'     '+str(dic_rao['algocoordi'])+'\n'+str(dic_rao2['algoname'])+'     '+str(dic_rao2['algobest'])+'     '+str(dic_rao2['algocoordi'])+'\n'+str(dic_rao3['algoname'])+'     '+str(dic_rao3['algobest'])+'     '+str(dic_rao3['algocoordi'])+'\n'+str(now)        
-        
-        # body = str(user_input_data+message)
-        # msg.attach(MIMEText(body, 'plain')) 
-
-        # file1 = open("Optimization_Result.txt", "a")  # append mode 
-        # file1.write(user_input_data+message) 
-        # file1.close() 
-
-        # opfiles=["jaya.txt","rao-1.txt","rao-2.txt","rao-3.txt"]
-        # data_from_containers=[jaya_container['Lines'],rao_container['Lines'],rao2_container['Lines'],rao3_container['Lines']]
-        # for i in range(0,len(data_from_containers)):
-        #     data_to_write=data_from_containers[i]
-        #     file_path="/userapp/"+str(opfiles[i])
-        #     file1=open(file_path,'a')
-        #     for j in data_to_write:
-        #         file1.write(j)
-        #     file1.close()
-
-        # allfiles=["Optimization_Result.txt","jaya.txt","rao-1.txt","rao-2.txt","rao-3.txt"]
-        # dir_path="/userapp"
-        # for f in allfiles:
-        #     file_path = os.path.join(dir_path, f)
-        #     attachment = MIMEApplication(open(file_path, "rb").read(), _subtype="txt")
-        #     attachment.add_header('Content-Disposition','attachment', filename=f)
-        #     msg.attach(attachment)
-        # s = smtplib.SMTP('smtp.gmail.com', 587) 
-        # s.starttls() 
-        # s.login(fromaddr, "Lastyearproj@123") 
-        # text = msg.as_string() 
-        # try:
-        #     s.sendmail(fromaddr, toaddr, text) 
-        # except SMTPRecipientsRefused:
-        #     pass
-        # s.quit() 
-
         return render(request,'codeapp/output_optimization_containers.html',alldic)

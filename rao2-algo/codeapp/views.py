@@ -81,7 +81,7 @@ def rao2Algo(Max_iter,SearchAgents_no,lower_val,upper_val):
                     Positions[i,:] = Positioncopy[i,:]
     best_score = np.amin(finval)
     message+="The best solution is: "+str(best_score)+" pos "+str(best_pos[0])+" "+str(worst_pos[-1])
-    return best_score,var1
+    return best_score,var1,Positions
 
 def home(request):
     return render(request,'codeapp/home.html')
@@ -139,10 +139,10 @@ def check(request):
         # x=str(main(int(opt_pop_size),int(opt_gen)))+str(' ')+str(opt_gen)+' '+str(opt_pop_size)
         # returnstring=str(x)
         # x,y=rao2Algo(int(opt_pop_size),int(opt_gen),int(code_lb),int(code_ub))
-        x,y=rao2Algo(int(opt_gen),int(opt_pop_size),int(code_lb),int(code_ub))
+        x,y,z=rao2Algo(int(opt_gen),int(opt_pop_size),int(code_lb),int(code_ub))
         print('rao2 algo container'+str(' ')+str(opt_gen)+' '+str(opt_pop_size))
         
-        return JsonResponse({'best':str(x),'algo-coordi':str(y),'text':'Rao2 Container','Lines':str(message)})
+        return JsonResponse({'best':str(x),'algo-coordi':str(y),'text':'Rao2 Container','Lines':z.tolist()})
     except (Exception, psycopg2.Error) as error :
         print ("Error while connecting to PostgreSQL", error)
         return JsonResponse({'best':'Error','algo-coordi':'Error','text':'Rao2 Container','Lines':'Error'})

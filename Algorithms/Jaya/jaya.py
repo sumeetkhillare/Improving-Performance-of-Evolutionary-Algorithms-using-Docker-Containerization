@@ -2,6 +2,7 @@ import math
 import numpy as np
 import random
 import pandas as pd
+import copy
 
 #for reference https://medium.com/@dhiraj.p.rai/jaya-optimization-algorithm-16da8708691b
 def myobj(p1):
@@ -24,8 +25,10 @@ def initialpopulation(mini,maxi,pop_size):
         p=[]        
         for a,b in zip(mini,maxi):
             p.append(a + (b-a) * random.random())
-        pop.append(p)    
-    ini_pop=pd.DataFrame(pop)        
+        
+        # print(p)
+        pop.append(p)
+    ini_pop=pd.DataFrame(pop)     
     return ini_pop
 
 
@@ -62,6 +65,7 @@ def jaya(*argv):
     lb=np.array(mini)
     ub=np.array(maxi)
     p1=initialpopulation(lb,ub,pop_size)
+    pop_final=copy.deepcopy(p1)
     p1['f']=myobj(p1)
     
     dim=len(lb)
@@ -70,6 +74,7 @@ def jaya(*argv):
     while (gen<Gen):
         new_p1=updatepopulation(p1,dim)
         new_p1=trimr(new_p1,lb,ub)
+        pop_final=new_p1
         new_p1['f']=myobj(new_p1)
         p1=greedyselector(p1,new_p1)
         gen=gen+1
@@ -78,6 +83,22 @@ def jaya(*argv):
         xbest=p1.loc[p1['f'].idxmin()][0:dim].tolist()
 #     print('Best={}'.format(best))
 #     print('xbest={}'.format(xbest))
+    # print(type(p1))
+    # for row in p1:
+    #     del row["f"]
+    #     print(row)
+    # print( np.delete(a, np.s_[1:3], axis=0))
+    pop=[]        
+    for row in (p1.values):    
+        # row=row.split()    
+        # print(row)
+        pop.append(row[:-1])
+    print(np.array(pop).tolist())
+        # for  in p1[i]:
+        #     p.append(a + (b-a) * random.random())
+    
+    # print(pop_final)
+    # print(type(p1.values.tolist()))
     return best,xbest
 
 

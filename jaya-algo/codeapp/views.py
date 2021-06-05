@@ -90,8 +90,11 @@ def jaya(*argv):
         message+="Generation "+str(gen)+" best "+str(best)+" "+str(xbest)+"\n"
     # print('Best={}'.format(best))
     # print('xbest={}'.format(xbest))
-    
-    return best,xbest
+    pop=[]        
+    for row in (p1.values):
+        pop.append(row[:-1])
+    population_final=np.array(pop)
+    return best,xbest,population_final.tolist()
 
 
 def main(pop_size1,Gen1,lower_val,upper_val):
@@ -100,10 +103,10 @@ def main(pop_size1,Gen1,lower_val,upper_val):
     global ub 
     lb=[lower_val,lower_val,lower_val,lower_val]#changelb
     ub=[upper_val,upper_val,upper_val,upper_val]#changeub
-    best,xbest = jaya(pop_size1, Gen1, lb, ub)
+    best,xbest,population_received = jaya(pop_size1, Gen1, lb, ub)
     print('The objective function value = {}'.format(best))
     print('The optimum values of variables = {}'.format(xbest))
-    return best,xbest
+    return best,xbest,population_received
 
 
 def home(request):
@@ -160,9 +163,9 @@ def check(request):
         # Print PostgreSQL Connection properties
         # x=str(main(int(opt_pop_size),int(opt_gen)))+str(' ')+str(opt_gen)+' '+str(opt_pop_size)
         # returnstring=str(x)
-        x,y=main(int(opt_pop_size),int(opt_gen),int(code_lb),int(code_ub))
+        x,y,population_received=main(int(opt_pop_size),int(opt_gen),int(code_lb),int(code_ub))
         print('jaya algo container'+str(' ')+str(opt_gen)+' '+str(opt_pop_size))
-        return JsonResponse({'best':str(x),'algo-coordi':str(y),'text':'Jaya Container','Lines':str(message)})
+        return JsonResponse({'best':str(x),'algo-coordi':str(y),'text':'Jaya Container','Lines':population_received})
     except (Exception, psycopg2.Error) as error :
         print ("Error while connecting to PostgreSQL", error)
         return JsonResponse({'best':'Error','algo-coordi':'Error','text':'Jaya Container','Lines':'error'})
