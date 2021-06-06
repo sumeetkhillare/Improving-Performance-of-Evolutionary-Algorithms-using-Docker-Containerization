@@ -84,12 +84,9 @@ def jaya(*argv):
         new_p1['f']=myobj(new_p1)
         p1=greedyselector(p1,new_p1)
         gen=gen+1
-    #     print(gen)
         best=p1['f'].min()
         xbest=p1.loc[p1['f'].idxmin()][0:dim].tolist()
         message+="Generation "+str(gen)+" best "+str(best)+" "+str(xbest)+"\n"
-    # print('Best={}'.format(best))
-    # print('xbest={}'.format(xbest))
     pop=[]        
     for row in (p1.values):
         pop.append(row[:-1])
@@ -114,8 +111,6 @@ def home(request):
 def code(request):
     if request.method=="POST":
         query=request.POST['array']
-        # listofnum=query.split(',')
-        # lisofintnum=[]
         returnstring='jaya algo'
         return HttpResponse('Sorted Array : '+returnstring)
         
@@ -177,5 +172,4 @@ def check(request):
             print("PostgreSQL connection is closed")
 
     return JsonResponse({'best':'Error','algo-coordi':'Error','text':'Jaya Container','Lines':'error'})
-    # return HttpResponse('You are in container 1!!! + Result : '+str(arr))
 

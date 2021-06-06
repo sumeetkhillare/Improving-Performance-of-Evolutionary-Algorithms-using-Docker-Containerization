@@ -8,12 +8,7 @@ import numpy as np
 message =''
 
 def rao3Algo(Max_iter,SearchAgents_no,lower_val,upper_val):
-    
-    
-    
-    
     global message
-    
     
     lenvar=4#changelenvar
     # SearchAgents_no = 10 #Population size
@@ -92,8 +87,6 @@ def home(request):
 def code(request):
     if request.method=="POST":
         query=request.POST['array']
-        # listofnum=query.split(',')
-        # lisofintnum=[]
         returnstring='rao algo'
         return HttpResponse('Sorted Array : '+returnstring)
 
@@ -141,9 +134,6 @@ def check(request):
         code_ub=code_ub.replace("('","")
         code_ub=code_ub.replace("',)","")
         
-
-
-        # x,y=rao3Algo(int(opt_pop_size),int(opt_gen),int(code_lb),int(code_ub))
         x,y=rao3Algo(int(opt_gen),int(opt_pop_size),int(code_lb),int(code_ub))
         print('rao algo container'+str(' ')+str(opt_gen)+' '+str(opt_pop_size))
 
@@ -160,4 +150,3 @@ def check(request):
             print("PostgreSQL connection is closed")
 
     return JsonResponse({'best':'Error','algo-coordi':'Error','text':'Rao3 Container','Lines':'Error'})
-    # return HttpResponse('You are in container 1!!! + Result : '+str(arr))

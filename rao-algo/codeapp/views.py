@@ -3,15 +3,10 @@ from django.http import JsonResponse
 import psycopg2
 from django.http import HttpResponse
 
-
-
-
-# Python code of Rao-1 Algorithm
-# Unconstrained optimization
-# Sphere function
 import random
 import math
 import numpy as np
+
 message =''
 def raoAlgo(Max_iter,SearchAgents_no,lower_val,upper_val):
     maxfes = 500000  # Maximum functions evaluation
@@ -85,8 +80,6 @@ def home(request):
 def code(request):
     if request.method=="POST":
         query=request.POST['array']
-        # listofnum=query.split(',')
-        # lisofintnum=[]
         returnstring='rao algo'
         return HttpResponse('Sorted Array : '+returnstring)
 
@@ -134,9 +127,6 @@ def check(request):
         code_ub=code_ub.replace("('","")
         code_ub=code_ub.replace("',)","")
         
-
-
-        # x,y=raoAlgo(int(opt_pop_size),int(opt_gen),int(code_lb),int(code_ub))
         x,y,z=raoAlgo(int(opt_gen),int(opt_pop_size),int(code_lb),int(code_ub))
         print('rao algo container'+str(' ')+str(opt_gen)+' '+str(opt_pop_size))
         print(str(z.tolist()))
@@ -152,5 +142,3 @@ def check(request):
             print("PostgreSQL connection is closed")
 
     return JsonResponse({'best':'Error','algo-coordi':'Error','text':'Rao1 Container','Lines':"Error"})
-
-    # return HttpResponse('You are in container 1!!! + Result : '+str(arr)
