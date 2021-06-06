@@ -1,27 +1,18 @@
 <html>
-    <h1>Home</h1>
-    <br>
-    <!-- <h3>For Sorting</h3>
-    <br>
-    <form action="code/" method="post">
-        {% csrf_token %}
-    <input type="text" placeholder="type comma seprated numbers" name="array">
-    <button type='submit'>SORT!!!</button>
-    </form>
-    <br>  -->
-    <h3>For Optimization</h3>
-    <br>
-    <form action="optimizationcode/" method="post">
-        {% csrf_token %}
-    <h3>Population Size</h3>
-    <input type="text" placeholder="type population size" name="pop_size">
-    <h3>Generation</h3>
-    <input type="text" placeholder="type generation" name="gen">
-    <h3>Lower Bound</h3>
-    <input type="text" placeholder="type lower bound" name="lb">
-    <h3>Upper Bound</h3>
-    <input type="text" placeholder="type upper bound" name="ub">
-    <button type='submit'>GO!!!</button>
-    </form>
-
+    <div style="margin-left: 2%;">
+        <h1 style="text-align: center;">Improving performance of evolutionary algorithms using docker containerization</h1>
+        <br>
+        <form action="optimizationcode/" method="post">
+            {% csrf_token %}
+                <h3>Population Size</h3>
+                <input type="text" placeholder="type population size" name="pop_size">
+                <h3>Generation</h3>
+                <input type="text" placeholder="type generation" name="gen">
+                <h3>Lower Bound</h3>
+                <input type="text" placeholder="type lower bound" name="lb">
+                <h3>Upper Bound</h3>
+                <input type="text" placeholder="type upper bound" name="ub">
+                <button type='submit'>GO!!!</button>
+        </form>
+    </div>
 </html>
