@@ -87,58 +87,9 @@ def code(request):
 
 
 def check(request):
-    try:
-        connection = psycopg2.connect(user = "postgres",
-                                    password = "password",
-                                    host = "db",
-                                    port = "5432",
-                                    database = "postgres")
-        postgreSQL_select_Query = "SELECT opt_gen FROM codeapp_optimizationcodeinput where code_type='optimization';"
-        cursor = connection.cursor()
-        cursor.execute(postgreSQL_select_Query)
-        opt_gen=cursor.fetchone()
-        opt_gen=str(opt_gen)
-        opt_gen=opt_gen.replace("('","")
-        opt_gen=opt_gen.replace("',)","")
-        postgreSQL_select_Query2 = "SELECT opt_pop_size FROM codeapp_optimizationcodeinput where code_type='optimization';"
-        # cursor = connection.cursor()
-        cursor.execute(postgreSQL_select_Query2)
-        opt_pop_size=cursor.fetchone()
-        opt_pop_size=str(opt_pop_size)
-        opt_pop_size=opt_pop_size.replace("('","")
-        opt_pop_size=opt_pop_size.replace("',)","")
-        # Print PostgreSQL Connection properties
-        # x=str(main(int(opt_pop_size),int(opt_gen)))+str(' ')+str(opt_gen)+' '+str(opt_pop_size)
-        # returnstring=str(x)
-
-
-
-        postgreSQL_select_Query3 = "SELECT code_lb FROM codeapp_optimizationcodeinput where code_type='optimization';"
-        cursor.execute(postgreSQL_select_Query3)
-        code_lb=cursor.fetchone()
-        code_lb=str(code_lb)
-        code_lb=code_lb.replace("('","")
-        code_lb=code_lb.replace("',)","")
-        
-        postgreSQL_select_Query4 = "SELECT code_ub FROM codeapp_optimizationcodeinput where code_type='optimization';"
-        cursor.execute(postgreSQL_select_Query4)
-        code_ub=cursor.fetchone()
-        code_ub=str(code_ub)
-        code_ub=code_ub.replace("('","")
-        code_ub=code_ub.replace("',)","")
-        
-        x,y,z=raoAlgo(int(opt_gen),int(opt_pop_size),int(code_lb),int(code_ub))
-        print('rao algo container'+str(' ')+str(opt_gen)+' '+str(opt_pop_size))
-        print(str(z.tolist()))
-        return JsonResponse({'best':str(x),'algo-coordi':str(y),'text':'Rao1 Container','Lines':z.tolist()})
-    except (Exception, psycopg2.Error) as error :
-        print ("Error while connecting to PostgreSQL", error)
-        return JsonResponse({'best':'Error connecting','algo-coordi':'Error','text':'Rao1 Container','Lines':"Error"})
-    finally:
-        #closing database connection.
-        if(connection):
-            cursor.close()
-            connection.close()
-            print("PostgreSQL connection is closed")
-
-    return JsonResponse({'best':'Error','algo-coordi':'Error','text':'Rao1 Container','Lines':"Error"})
+    popsize=int(request.GET['popsize'])
+    lb=int(request.GET['lb'])
+    ub=int(request.GET['ub'])
+    gen=int(request.GET['gen'])
+    x,y,z=raoAlgo(gen,popsize,lb,ub)
+    return JsonResponse({'best':str(x),'algo-coordi':str(y),'text':'Rao1 Container','Lines':z.tolist()})

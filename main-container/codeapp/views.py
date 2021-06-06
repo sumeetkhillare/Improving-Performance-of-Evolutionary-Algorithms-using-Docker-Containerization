@@ -35,26 +35,26 @@ def jaya_container_req(opt_pop_size,opt_gen,lb,ub):
     start = time.time()
     url='http://jaya-algo:8000/check/?ub='+str(ub)+'&lb='+str(lb)+'&popsize='+str(opt_pop_size)+'&gen='+str(opt_gen)
     jaya_container=requests.get(url).json()
-    print(url)
-    print(jaya_container)
     end=time.time()
     jaya_time=str(end-start)
     return jaya_container
 
-def rao_container_req():
+def rao_container_req(opt_pop_size,opt_gen,lb,ub):
     global rao_container
     global rao_time
     start = time.time()
-    rao_container=requests.get('http://rao-algo:8000/check/').json()
+    url='http://rao-algo:8000/check/?ub='+str(ub)+'&lb='+str(lb)+'&popsize='+str(opt_pop_size)+'&gen='+str(opt_gen)
+    rao_container=requests.get(url).json()
     end = time.time()
     rao_time = end-start
     return rao_container
 
-def rao2_container_req():
+def rao2_container_req(opt_pop_size,opt_gen,lb,ub):
     global rao2_container
     global rao2_time
     start=time.time()
-    rao2_container=requests.get('http://rao2-algo:8000/check/').json()
+    url='http://rao2-algo:8000/check/?ub='+str(ub)+'&lb='+str(lb)+'&popsize='+str(opt_pop_size)+'&gen='+str(opt_gen)
+    rao2_container=requests.get(url).json()
     end=time.time()
     rao2_time=end-start
     return rao2_container
@@ -174,8 +174,8 @@ def optimizationcode(request):
         global rao3_time
                 
         t1 = threading.Thread(target=jaya_container_req,args=(opt_pop_size,opt_gen,lb,ub))
-        t2 = threading.Thread(target=rao_container_req)
-        t3 = threading.Thread(target=rao2_container_req)
+        t2 = threading.Thread(target=rao_container_req,args=(opt_pop_size,opt_gen,lb,ub))
+        t3 = threading.Thread(target=rao2_container_req,args=(opt_pop_size,opt_gen,lb,ub))
         
         t1.start()
         t2.start()
@@ -191,11 +191,11 @@ def optimizationcode(request):
         rao_algo_data={'algoname':str(rao_container['text']),'algobest':str(rao_container['best']),'algocoordi':str(rao_container['algo-coordi']),'algotime':str(rao_time)}
         rao2_algo_data={'algoname':str(rao2_container['text']),'algobest':str(rao2_container['best']),'algocoordi':str(rao2_container['algo-coordi']),'algotime':str(rao2_time)}
         
-        # concat=np.concatenate((np.array(jaya_container['Lines']),np.array(rao_container['Lines']),np.array(jaya_container['Lines'])),axis=0)
-        # best_score,coordinate,calc_time=rao3Algo(int(opt_gen), 3*(int(opt_pop_size)), int(lb), int(ub), concat)
-        # rao3_algo_data={'algoname':str("Rao3 Final Output"),'algobest':str(best_score),'algocoordi':str(coordinate),'algotime':str(calc_time)}
-        alldata=[jaya_algo_data,rao_algo_data,rao2_algo_data]
-        # ,rao3_algo_data]
+        concat=np.concatenate((np.array(jaya_container['Lines']),np.array(rao_container['Lines']),np.array(jaya_container['Lines'])),axis=0)
+        best_score,coordinate,calc_time=rao3Algo(int(opt_gen), 3*(int(opt_pop_size)), int(lb), int(ub), concat)
+        rao3_algo_data={'algoname':str("Rao3 Final Output"),'algobest':str(best_score),'algocoordi':str(coordinate),'algotime':str(calc_time)}
+        alldata=[jaya_algo_data,rao_algo_data,rao2_algo_data
+        ,rao3_algo_data]
         alldata={'alldata':alldata,'equation':equation}
         
         return render(request,'codeapp/output_optimization_containers.html',alldata)
