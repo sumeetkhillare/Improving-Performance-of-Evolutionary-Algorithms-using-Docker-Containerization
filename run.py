@@ -43,11 +43,16 @@ else:
   #Replace in rao algo files
   rao_lenvar="    lenvar="
   eq="        return "+user_eq+"#changeequation\n"
-  raofilenames=["./rao-algo/codeapp/views.py","./rao2-algo/codeapp/views.py","./rao3-algo/codeapp/views.py"]
+  raofilenames=["./rao-algo/codeapp/views.py","./rao2-algo/codeapp/views.py","./main-container/codeapp/views.py"]
   for filename in raofilenames:
     findandreplace(filename,'#changelenvar',"    lenvar="+str(no_variables)+"#changelenvar\n")
     findandreplace(filename,"#changeequation",eq)
-    
+  
+  #Replace Global Variable
+  global_equation="equation='Equation: "+user_eq+"'#changeglobalvariable\n"
+  global_filename="./main-container/codeapp/views.py"
+  findandreplace(global_filename,"#changeglobalvariable",global_equation)
+  
   #Replace in jaya algo files
   lb_list,ub_list=createList(no_variables)
   filename="./jaya-algo/codeapp/views.py"
@@ -71,3 +76,5 @@ os.system('python3 ./cleanup.py')
 
 # 7.5*x[7] + 5.5*x[8] + 7*x[5] + 6*x[6] + 5*(x[1] + x[2])
 # x[1]+x[2]+x[3]+x[4]+x[5]+x[6]*x[7]
+# 15
+# 7.5*x[7] + 5.5*x[8] + 7*x[5] + 6*x[6] + 5*(x[1] + x[2]) + 10*x[9] - x[10]**3 + 15 * x[13] - 2* x[14]
