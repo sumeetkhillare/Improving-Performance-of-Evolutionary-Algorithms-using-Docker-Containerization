@@ -115,7 +115,7 @@ def code(request):
     ub=request.GET['ub']
     gen=request.GET['gen']
     print(popsize,gen,lb,ub)
-    return JsonResponse({'best':'code','algo-coordi':'code','text':'code','Lines':'code'})
+    return JsonResponse({'best':'code','algo-coordi':'code','text':'code','Array':'code'})
     # return HttpResponse("hii")
 
 
@@ -125,5 +125,5 @@ def check(request):
     ub=int(request.GET['ub'])
     gen=int(request.GET['gen'])
     x,y,population_received=main(int(popsize),int(gen),int(lb),int(ub))
-    return JsonResponse({'best':str(x),'algo-coordi':str(y),'text':'Jaya Container','Lines':population_received})
+    return JsonResponse({'best':str(x),'algo-coordi':str(y),'text':'Jaya Container','Array':population_received})
     

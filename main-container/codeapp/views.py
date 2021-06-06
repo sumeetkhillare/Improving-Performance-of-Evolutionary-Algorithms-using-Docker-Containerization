@@ -180,7 +180,7 @@ def optimizationcode(request):
         rao_algo_data={'algoname':str(rao_container['text']),'algobest':str(rao_container['best']),'algocoordi':str(rao_container['algo-coordi']),'algotime':str(rao_time)}
         rao2_algo_data={'algoname':str(rao2_container['text']),'algobest':str(rao2_container['best']),'algocoordi':str(rao2_container['algo-coordi']),'algotime':str(rao2_time)}
         
-        concat=np.concatenate((np.array(jaya_container['Lines']),np.array(rao_container['Lines']),np.array(rao2_container['Lines'])),axis=0)
+        concat=np.concatenate((np.array(jaya_container['Array']),np.array(rao_container['Array']),np.array(rao2_container['Array'])),axis=0)
         best_score,coordinate,calc_time=rao3Algo(int(opt_gen), 3*(int(opt_pop_size)), int(lb), int(ub), concat)
         rao3_algo_data={'algoname':str("Rao3 Final Output"),'algobest':str(best_score),'algocoordi':str(coordinate),'algotime':str(calc_time)}
         alldata=[jaya_algo_data,rao_algo_data,rao2_algo_data,rao3_algo_data]

@@ -92,4 +92,4 @@ def check(request):
     ub=int(request.GET['ub'])
     gen=int(request.GET['gen'])
     x,y,z=raoAlgo(gen,popsize,lb,ub)
-    return JsonResponse({'best':str(x),'algo-coordi':str(y),'text':'Rao1 Container','Lines':z.tolist()})
+    return JsonResponse({'best':str(x),'algo-coordi':str(y),'text':'Rao1 Container','Array':z.tolist()})

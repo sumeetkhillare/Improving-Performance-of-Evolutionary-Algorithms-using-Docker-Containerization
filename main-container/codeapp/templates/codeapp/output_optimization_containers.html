@@ -33,14 +33,19 @@
     </style>
   </head>
 <body>
-  <h5>{{equation}}</h5>
+  {% comment %} <h5 style="text-align: center;">{{equation}}</h5>
+  <br> {% endcomment %}
+<p class="h4" style="text-align: center;">{{equation}}</p>
   <br>
-  <table id="customers">
+<table class="table">
+  <thead class="thead-dark">
     <tr>
-      <th>Container</th>
-      <th>Best</th>
-      <th>Co-ordinates</th>
+      <th scope="col">Container</th>
+      <th scope="col">Best Score</th>
+      <th scope="col">Co-ordinates</th>
     </tr>
+  </thead>
+  <tbody>
     {% for i in alldata %}
         <tr>
           <td>{{i.algoname}}</td>
@@ -48,7 +53,8 @@
           <td>{{i.algocoordi}}</td>
         </tr>
      {% endfor %}
-  </table>
-
+  </tbody>
+</table>
 </body>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 </html>
