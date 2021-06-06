@@ -9,6 +9,7 @@ from smtplib import SMTPRecipientsRefused
 import time
 import threading
 import os
+import psycopg2
 import numpy as np
 import datetime
 jaya_container=''
@@ -19,28 +20,23 @@ jaya_time=0
 rao_time=0
 rao2_time=0
 rao3_time=0
-
+equation="Equation: (x[0]**2)-(x[1]**3)+(x[2]**2)+(x[3]**2)"
 message =''
 
 from datetime import datetime
 def home(request):
-    return render(request,'codeapp/home.html')
-def code(request):
-    return render(request,'codeapp/home.html')
+    global equation
+    equation_dictionary={"equation":equation}
+    return render(request,'codeapp/home.html',equation_dictionary)
 
-def test(request):
-    code_input =list( CodeInput.objects.values('codeinput','code_type'))
-    print(code_input)
-    s=''
-    for i in code_input:
-        s+=str(i['codeinput'])+"    "+str(̥̥i['code_type'])+"    "
-    return HttpResponse(str(s))
-
-def jaya_container_req():
+def jaya_container_req(opt_pop_size,opt_gen,lb,ub):
     global jaya_container
     global jaya_time
     start = time.time()
-    jaya_container=requests.get('http://jaya-algo:8000/check/').json()
+    url='http://jaya-algo:8000/check/?ub='+str(ub)+'&lb='+str(lb)+'&popsize='+str(opt_pop_size)+'&gen='+str(opt_gen)
+    jaya_container=requests.get(url).json()
+    print(url)
+    print(jaya_container)
     end=time.time()
     jaya_time=str(end-start)
     return jaya_container
@@ -88,7 +84,8 @@ def rao3Algo(Max_iter,SearchAgents_no,lower_val,upper_val,received_position):
     
     
     def fitness(x):
-        return (x[0]**2)-(x[1]**3)+(x[2]**2)+(x[3]**2)#changeequation
+        eq=(x[0]**2)-(x[1]**3)+(x[2]**2)+(x[3]**2)
+        return eq#changeequation
     Positions=received_position
     best_pos = np.zeros(lenvar) # search agent's best position
     worst_pos = np.zeros(lenvar) # search agent's worst position
@@ -154,6 +151,7 @@ def rao3Algo(Max_iter,SearchAgents_no,lower_val,upper_val,received_position):
 
 def optimizationcode(request):
     if request.method=="POST":
+        global equation
         opt_pop_size=request.POST['pop_size']
         opt_gen=request.POST['gen']
         lb=request.POST['lb']
@@ -175,7 +173,7 @@ def optimizationcode(request):
         global rao2_time
         global rao3_time
                 
-        t1 = threading.Thread(target=jaya_container_req)
+        t1 = threading.Thread(target=jaya_container_req,args=(opt_pop_size,opt_gen,lb,ub))
         t2 = threading.Thread(target=rao_container_req)
         t3 = threading.Thread(target=rao2_container_req)
         
@@ -193,10 +191,20 @@ def optimizationcode(request):
         rao_algo_data={'algoname':str(rao_container['text']),'algobest':str(rao_container['best']),'algocoordi':str(rao_container['algo-coordi']),'algotime':str(rao_time)}
         rao2_algo_data={'algoname':str(rao2_container['text']),'algobest':str(rao2_container['best']),'algocoordi':str(rao2_container['algo-coordi']),'algotime':str(rao2_time)}
         
-        concat=np.concatenate((np.array(jaya_container['Lines']),np.array(rao_container['Lines']),np.array(jaya_container['Lines'])),axis=0)
-        best_score,coordinate,calc_time=rao3Algo(10, 30, -10, 10, concat)
-        rao3_algo_data={'algoname':str("Rao3 Final Output"),'algobest':str(best_score),'algocoordi':str(coordinate),'algotime':str(calc_time)}
-        alldata=[jaya_algo_data,rao_algo_data,rao2_algo_data,rao3_algo_data]
-        alldata={'alldata':alldata}
+        # concat=np.concatenate((np.array(jaya_container['Lines']),np.array(rao_container['Lines']),np.array(jaya_container['Lines'])),axis=0)
+        # best_score,coordinate,calc_time=rao3Algo(int(opt_gen), 3*(int(opt_pop_size)), int(lb), int(ub), concat)
+        # rao3_algo_data={'algoname':str("Rao3 Final Output"),'algobest':str(best_score),'algocoordi':str(coordinate),'algotime':str(calc_time)}
+        alldata=[jaya_algo_data,rao_algo_data,rao2_algo_data]
+        # ,rao3_algo_data]
+        alldata={'alldata':alldata,'equation':equation}
         
         return render(request,'codeapp/output_optimization_containers.html',alldata)
+
+
+def search(request):
+    popsize=request.GET['popsize']
+    lb=request.GET['lb']
+    ub=request.GET['ub']
+    gen=request.GET['gen']
+    print(popsize,gen,lb,ub)
+    return HttpResponse("hii")
