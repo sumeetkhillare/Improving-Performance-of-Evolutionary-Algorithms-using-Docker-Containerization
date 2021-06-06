@@ -18,25 +18,9 @@ services:
     ports:
       - "4012:8000"
     container_name: rao2-algo
-  rao3-algo:
-    restart: always
-    build: ./rao3-algo
-    ports:
-      - "4014:8000"
-    container_name: rao3-algo
   main-container:
     restart: always
     build: ./main-container
     ports:
       - "8000:8000"
-    depends_on:
-      - db
     container_name: main-container
-
-  db:
-    image: postgres:12.0-alpine
-    environment:
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=password
-      - POSTGRES_DB=postgres
-    container_name: db

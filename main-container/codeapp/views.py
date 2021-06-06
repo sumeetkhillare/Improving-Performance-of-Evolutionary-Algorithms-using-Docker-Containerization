@@ -3,7 +3,6 @@ import requests
 import random
 from django.http import HttpResponse
 import json
-from .models import CodeInput,OptimizationCodeInput
 import smtplib  
 from smtplib import SMTPRecipientsRefused
 import time
@@ -157,13 +156,7 @@ def optimizationcode(request):
         lb=request.POST['lb']
         ub=request.POST['ub']
         user_input_data="Population Size: "+str(opt_pop_size)+"\n"+"Generations: "+str(opt_gen)+"\n"+"Lower bound: "+str(lb)+"\n"+"Upper bound: "+str(ub)+"\n"
-        opt_inp=OptimizationCodeInput()
-        opt_inp.code_type='optimization'
-        opt_inp.opt_pop_size=opt_pop_size
-        opt_inp.opt_gen=opt_gen
-        opt_inp.code_lb=lb
-        opt_inp.code_ub=ub
-        opt_inp.save()
+        
         global jaya_container
         global rao_container
         global rao2_container
@@ -185,13 +178,12 @@ def optimizationcode(request):
         t2.join()
         t3.join()
         end = time.time()
-        opt_inp.delete()
         
         jaya_algo_data={'algoname':str(jaya_container['text']),'algobest':str(jaya_container['best']),'algocoordi':str(jaya_container['algo-coordi']),'algotime':str(jaya_time)}
         rao_algo_data={'algoname':str(rao_container['text']),'algobest':str(rao_container['best']),'algocoordi':str(rao_container['algo-coordi']),'algotime':str(rao_time)}
         rao2_algo_data={'algoname':str(rao2_container['text']),'algobest':str(rao2_container['best']),'algocoordi':str(rao2_container['algo-coordi']),'algotime':str(rao2_time)}
         
-        concat=np.concatenate((np.array(jaya_container['Lines']),np.array(rao_container['Lines']),np.array(jaya_container['Lines'])),axis=0)
+        concat=np.concatenate((np.array(jaya_container['Lines']),np.array(rao_container['Lines']),np.array(rao2_container['Lines'])),axis=0)
         best_score,coordinate,calc_time=rao3Algo(int(opt_gen), 3*(int(opt_pop_size)), int(lb), int(ub), concat)
         rao3_algo_data={'algoname':str("Rao3 Final Output"),'algobest':str(best_score),'algocoordi':str(coordinate),'algotime':str(calc_time)}
         alldata=[jaya_algo_data,rao_algo_data,rao2_algo_data
@@ -208,3 +200,6 @@ def search(request):
     gen=request.GET['gen']
     print(popsize,gen,lb,ub)
     return HttpResponse("hii")
+
+
+'http://localhost:4012/check/?ub=10&lb=-10&popsize=10&gen=10'
