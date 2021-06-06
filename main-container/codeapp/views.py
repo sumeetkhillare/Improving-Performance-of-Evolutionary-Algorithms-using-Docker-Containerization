@@ -84,7 +84,7 @@ def rao3Algo(Max_iter,SearchAgents_no,lower_val,upper_val,received_position):
     
     def fitness(x):
         eq=(x[0]**2)-(x[1]**3)+(x[2]**2)+(x[3]**2)
-        return eq#changeequation
+        return (x[0]**2)-(x[1]**3)+(x[2]**2)+(x[3]**2)#changeequation
     Positions=received_position
     best_pos = np.zeros(lenvar) # search agent's best position
     worst_pos = np.zeros(lenvar) # search agent's worst position
@@ -166,17 +166,20 @@ def optimizationcode(request):
         global rao2_time
         global rao3_time
                 
-        t1 = threading.Thread(target=jaya_container_req,args=(opt_pop_size,opt_gen,lb,ub))
-        t2 = threading.Thread(target=rao_container_req,args=(opt_pop_size,opt_gen,lb,ub))
-        t3 = threading.Thread(target=rao2_container_req,args=(opt_pop_size,opt_gen,lb,ub))
+        # t1 = threading.Thread(target=jaya_container_req,args=(opt_pop_size,opt_gen,lb,ub))
+        # t2 = threading.Thread(target=rao_container_req,args=(opt_pop_size,opt_gen,lb,ub))
+        # t3 = threading.Thread(target=rao2_container_req,args=(opt_pop_size,opt_gen,lb,ub))
         
-        t1.start()
-        t2.start()
-        t3.start()
+        # t1.start()
+        # t2.start()
+        # t3.start()
         
-        t1.join()
-        t2.join()
-        t3.join()
+        # t1.join()
+        # t2.join()
+        # t3.join()
+        jaya_container_req(opt_pop_size,opt_gen,lb,ub)
+        rao_container_req(opt_pop_size,opt_gen,lb,ub)
+        rao2_container_req(opt_pop_size,opt_gen,lb,ub)
         end = time.time()
         
         jaya_algo_data={'algoname':str(jaya_container['text']),'algobest':str(jaya_container['best']),'algocoordi':str(jaya_container['algo-coordi']),'algotime':str(jaya_time)}

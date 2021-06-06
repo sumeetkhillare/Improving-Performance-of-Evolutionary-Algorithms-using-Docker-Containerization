@@ -43,7 +43,7 @@ else:
   #Replace in rao algo files
   rao_lenvar="    lenvar="
   eq="        return "+user_eq+"#changeequation\n"
-  raofilenames=["./rao-algo/codeapp/views.py","./rao2-algo/codeapp/views.py","./rao3-algo/codeapp/views.py"]
+  raofilenames=["./rao-algo/codeapp/views.py","./rao2-algo/codeapp/views.py","./main-container/codeapp/views.py"]
   for filename in raofilenames:
     findandreplace(filename,'#changelenvar',"    lenvar="+str(no_variables)+"#changelenvar\n")
     findandreplace(filename,"#changeequation",eq)

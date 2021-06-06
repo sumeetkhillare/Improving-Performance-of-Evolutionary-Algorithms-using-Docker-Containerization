@@ -31,7 +31,7 @@ findandreplace(filename,"#changeub",ubeq)
 
 #Rao algo files cleanup
 eq="        return "+user_eq+"\n"
-raofilenames=["./rao-algo/codeapp/views.py","./rao2-algo/codeapp/views.py","./rao3-algo/codeapp/views.py"]
+raofilenames=["./rao-algo/codeapp/views.py","./rao2-algo/codeapp/views.py","./main-container/codeapp/views.py"]
 for filename in raofilenames:
   findandreplace(filename,'#changelenvar',"    lenvar=4#changelenvar\n")
   findandreplace(filename,"#changeequation",eq)
