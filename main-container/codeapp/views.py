@@ -4,18 +4,12 @@ import random
 from django.http import HttpResponse
 import json
 from .models import CodeInput,OptimizationCodeInput
-import smtplib 
-from email.mime.multipart import MIMEMultipart 
-from email.mime.text import MIMEText 
-from email.mime.base import MIMEBase 
-from email import encoders 
+import smtplib  
 from smtplib import SMTPRecipientsRefused
 import time
 import threading
 import os
 import numpy as np
-from email.mime.multipart import MIMEMultipart
-from email.mime.application import MIMEApplication
 import datetime
 jaya_container=''
 rao_container=''
@@ -39,7 +33,7 @@ def test(request):
     print(code_input)
     s=''
     for i in code_input:
-        s+=str(i['codeinput'])+"    "+str(i['code_type'])+"    "
+        s+=str(i['codeinput'])+"    "+str(̥̥i['code_type'])+"    "
     return HttpResponse(str(s))
 
 def jaya_container_req():
@@ -80,9 +74,6 @@ def rao3_container_req():
 
 
 def rao3Algo(Max_iter,SearchAgents_no,lower_val,upper_val,received_position):
-    
-    
-    
     start = time.time()
     global message
     
@@ -98,7 +89,6 @@ def rao3Algo(Max_iter,SearchAgents_no,lower_val,upper_val,received_position):
     
     def fitness(x):
         return (x[0]**2)-(x[1]**3)+(x[2]**2)+(x[3]**2)#changeequation
-    # Positions = np.zeros((SearchAgents_no, lenvar)) # search agent position
     Positions=received_position
     best_pos = np.zeros(lenvar) # search agent's best position
     worst_pos = np.zeros(lenvar) # search agent's worst position
@@ -199,14 +189,14 @@ def optimizationcode(request):
         end = time.time()
         opt_inp.delete()
         
-        dic_jaya={'algoname':str(jaya_container['text']),'algobest':str(jaya_container['best']),'algocoordi':str(jaya_container['algo-coordi']),'algotime':str(jaya_time)}
-        dic_rao={'algoname':str(rao_container['text']),'algobest':str(rao_container['best']),'algocoordi':str(rao_container['algo-coordi']),'algotime':str(rao_time)}
-        dic_rao2={'algoname':str(rao2_container['text']),'algobest':str(rao2_container['best']),'algocoordi':str(rao2_container['algo-coordi']),'algotime':str(rao2_time)}
+        jaya_algo_data={'algoname':str(jaya_container['text']),'algobest':str(jaya_container['best']),'algocoordi':str(jaya_container['algo-coordi']),'algotime':str(jaya_time)}
+        rao_algo_data={'algoname':str(rao_container['text']),'algobest':str(rao_container['best']),'algocoordi':str(rao_container['algo-coordi']),'algotime':str(rao_time)}
+        rao2_algo_data={'algoname':str(rao2_container['text']),'algobest':str(rao2_container['best']),'algocoordi':str(rao2_container['algo-coordi']),'algotime':str(rao2_time)}
         
         concat=np.concatenate((np.array(jaya_container['Lines']),np.array(rao_container['Lines']),np.array(jaya_container['Lines'])),axis=0)
         best_score,coordinate,calc_time=rao3Algo(10, 30, -10, 10, concat)
-        dic_rao3={'algoname':str("Rao3 Final Output"),'algobest':str(best_score),'algocoordi':str(coordinate),'algotime':str(calc_time)}
-        alldic=[dic_jaya,dic_rao,dic_rao2,dic_rao3] #,dic_rao,dic_rao2
-        alldic={'alldic':alldic}
+        rao3_algo_data={'algoname':str("Rao3 Final Output"),'algobest':str(best_score),'algocoordi':str(coordinate),'algotime':str(calc_time)}
+        alldata=[jaya_algo_data,rao_algo_data,rao2_algo_data,rao3_algo_data]
+        alldata={'alldata':alldata}
         
-        return render(request,'codeapp/output_optimization_containers.html',alldic)
+        return render(request,'codeapp/output_optimization_containers.html',alldata)
