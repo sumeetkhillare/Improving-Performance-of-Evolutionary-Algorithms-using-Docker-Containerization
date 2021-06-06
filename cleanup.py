@@ -2,7 +2,7 @@ import os
 
 #Default equation
 user_eq="(x[0]**2)-(x[1]**3)+(x[2]**2)+(x[3]**2)#changeequation"
-
+user_global_eq="(x[0]**2)-(x[1]**3)+(x[2]**2)+(x[3]**2)"
 #Defalut variables length for rao algo
 rao_lenvar="    lenvar=4#changelenvar\n"
 
@@ -36,6 +36,10 @@ for filename in raofilenames:
   findandreplace(filename,'#changelenvar',"    lenvar=4#changelenvar\n")
   findandreplace(filename,"#changeequation",eq)
     
+#Replace Global Variable
+global_equation="equation='Equation: "+user_global_eq+"'#changeglobalvariable\n"
+global_filename="./main-container/codeapp/views.py"
+findandreplace(global_filename,"#changeglobalvariable",global_equation)
 #Removing docker containers
 os.system('docker-compose down')
 
