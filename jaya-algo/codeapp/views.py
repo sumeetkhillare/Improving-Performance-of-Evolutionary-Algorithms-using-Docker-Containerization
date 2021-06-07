@@ -2,30 +2,34 @@ from django.shortcuts import render
 from django.http import JsonResponse
 import psycopg2
 from django.http import HttpResponse
-
-
-
-
 import math
 import numpy as np
 import random
 import pandas as pd
 
-#for reference https://medium.com/@dhiraj.p.rai/jaya-optimization-algorithm-16da8708691b
-def myobj(p1):
-    F=[]
-    for i in range (len(p1)):
-        x = p1.loc[i]
-        f=(x[0]**2)-(x[1]**3)+(x[2]**2)+(x[3]**2)#changeequation
-        F.append(f)
-    return F
-
-
 # pop_size = 50
 # Gen = 10
 lb=[-20,-20]
 ub=[20,20]
+eq=""
+leneq=0
 message=''
+
+def myobj(p1):
+    F=[]
+    for i in range (len(p1)):
+        x = p1.loc[i]
+        res=''
+        global eq
+        sep_var=eq.split(',')
+        for i in sep_var:
+            if "x" in i:
+                i=str(x[int(i[2])])
+            res+=i
+        f=eval(res)
+        F.append(f)
+    return F
+
 
 def initialpopulation(mini,maxi,pop_size):
     pop=[]
@@ -97,9 +101,13 @@ def jaya(*argv):
 def main(pop_size1,Gen1,lower_val,upper_val):
 
     global lb
-    global ub 
-    lb=[lower_val,lower_val,lower_val,lower_val]#changelb
-    ub=[upper_val,upper_val,upper_val,upper_val]#changeub
+    global ub
+    global leneq
+    lb=[]
+    ub=[]
+    for i in range(0,leneq):
+        lb.append(lower_val)
+        ub.append(upper_val)
     best,xbest,population_received = jaya(pop_size1, Gen1, lb, ub)
     print('The objective function value = {}'.format(best))
     print('The optimum values of variables = {}'.format(xbest))
@@ -110,20 +118,17 @@ def home(request):
     return render(request,'codeapp/home.html')
 
 def code(request):
-    popsize=request.GET['popsize']
-    lb=request.GET['lb']
-    ub=request.GET['ub']
-    gen=request.GET['gen']
-    print(popsize,gen,lb,ub)
-    return JsonResponse({'best':'code','algo-coordi':'code','text':'code','Array':'code'})
-    # return HttpResponse("hii")
-
+    return HttpResponse('hii')
 
 def check(request):
     popsize=int(request.GET['popsize'])
     lb=int(request.GET['lb'])
     ub=int(request.GET['ub'])
     gen=int(request.GET['gen'])
-    x,y,population_received=main(int(popsize),int(gen),int(lb),int(ub))
+    global eq
+    eq=str(request.GET['eq'])
+    global leneq
+    leneq=int(request.GET['len'])
+    x,y,population_received=main(popsize,gen,lb,ub)
     return JsonResponse({'best':str(x),'algo-coordi':str(y),'text':'Jaya Container','Array':population_received})
     

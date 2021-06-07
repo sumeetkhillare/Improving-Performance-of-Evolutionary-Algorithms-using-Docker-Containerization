@@ -25,10 +25,18 @@
 <br>
 <p class="h4" style="text-align: center;">{{equation}}</p>
 <br>
-<div class="row align-items-center justify-content-center">
+<div>
     
     <form action="optimizationcode/" method="post">
         {% csrf_token %}
+    <div class="form-group">
+        <label>Equation</label>
+        <input type="text" class="form-control" placeholder="Type Equation" name="equation">
+    </div>
+    <div class="form-group">
+        <label>Number of variables</label>
+        <input type="text" class="form-control" placeholder="Type number of variables" name="leneq">
+    </div>
     <div class="form-group">
         <label>Population Size</label>
         <input type="text" class="form-control" placeholder="Type Population Size" name="pop_size">

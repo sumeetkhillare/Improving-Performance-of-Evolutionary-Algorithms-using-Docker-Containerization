@@ -19,7 +19,8 @@ jaya_time=0
 rao_time=0
 rao2_time=0
 rao3_time=0
-equation='Equation: (x[0]**2)-(x[1]**3)+(x[2]**2)+(x[3]**2)'#changeglobalvariable
+equation=''
+leneq=0
 message =''
 
 from datetime import datetime
@@ -28,50 +29,42 @@ def home(request):
     equation_dictionary={"equation":equation}
     return render(request,'codeapp/home.html',equation_dictionary)
 
-def jaya_container_req(opt_pop_size,opt_gen,lb,ub):
+def jaya_container_req(equation_rec,leneq_rec,opt_pop_size,opt_gen,lb,ub):
     global jaya_container
     global jaya_time
     start = time.time()
-    url='http://jaya-algo:8000/check/?ub='+str(ub)+'&lb='+str(lb)+'&popsize='+str(opt_pop_size)+'&gen='+str(opt_gen)
+    url='http://jaya-algo:8000/check/?ub='+str(ub)+'&lb='+str(lb)+'&popsize='+str(opt_pop_size)+'&gen='+str(opt_gen)+'&len='+str(leneq_rec)+'&eq='+equation_rec
     jaya_container=requests.get(url).json()
     end=time.time()
     jaya_time=str(end-start)
     return jaya_container
 
-def rao_container_req(opt_pop_size,opt_gen,lb,ub):
+def rao_container_req(equation_rec,leneq_rec,opt_pop_size,opt_gen,lb,ub):
     global rao_container
     global rao_time
     start = time.time()
-    url='http://rao-algo:8000/check/?ub='+str(ub)+'&lb='+str(lb)+'&popsize='+str(opt_pop_size)+'&gen='+str(opt_gen)
+    url='http://rao-algo:8000/check/?ub='+str(ub)+'&lb='+str(lb)+'&popsize='+str(opt_pop_size)+'&gen='+str(opt_gen)+'&len='+str(leneq_rec)+'&eq='+equation_rec
     rao_container=requests.get(url).json()
     end = time.time()
     rao_time = end-start
     return rao_container
 
-def rao2_container_req(opt_pop_size,opt_gen,lb,ub):
+def rao2_container_req(equation_rec,leneq_rec,opt_pop_size,opt_gen,lb,ub):
     global rao2_container
     global rao2_time
     start=time.time()
-    url='http://rao2-algo:8000/check/?ub='+str(ub)+'&lb='+str(lb)+'&popsize='+str(opt_pop_size)+'&gen='+str(opt_gen)
+    url='http://rao2-algo:8000/check/?ub='+str(ub)+'&lb='+str(lb)+'&popsize='+str(opt_pop_size)+'&gen='+str(opt_gen)+'&len='+str(leneq_rec)+'&eq='+equation_rec
     rao2_container=requests.get(url).json()
     end=time.time()
     rao2_time=end-start
     return rao2_container
 
-def rao3_container_req():
-    global rao3_container
-    global rao3_time
-    start=time.time()
-    rao3_container=requests.get('http://rao3-algo:8000/check/').json()
-    end=time.time()
-    rao3_time=end-start
-    return rao3_container
 
 
-def rao3Algo(Max_iter,SearchAgents_no,lower_val,upper_val,received_position):
+def rao3Algo(Max_iter,SearchAgents_no,lower_val,upper_val,received_position,leneq_rec,equation_rec):
     start = time.time()
     maxfes = 500000  # Maximum functions evaluation
-    lenvar=4#changelenvar
+    lenvar = leneq_rec
     # SearchAgents_no = 10  # Population size
     # Max_iter = math.floor(maxfes / SearchAgents_no)  # Maximum number of iterations
     # Max_iter = 100
@@ -80,13 +73,16 @@ def rao3Algo(Max_iter,SearchAgents_no,lower_val,upper_val,received_position):
     var1=[]
     global message
     
-    
     def fitness(x):
-        return (x[0]**2)-(x[1]**3)+(x[2]**2)+(x[3]**2)#changeequation
+        res=''
+        sep_var=equation_rec.split(' ')
+        for i in sep_var:
+            if "x" in i:
+                i=str(x[int(i[2])])
+            res+=i
+        return eval(res)
 
-    Positions = received_position
-
-    # Positions = np.zeros((SearchAgents_no, lenvar)) # search agent position
+    Positions = received_position # search agent position
     best_pos = np.zeros(lenvar) # search agent's best position
     worst_pos = np.zeros(lenvar) # search agent's worst position
 
@@ -139,6 +135,7 @@ def rao3Algo(Max_iter,SearchAgents_no,lower_val,upper_val,received_position):
                     Positions[i,:] = Positioncopy[i,:]
     best_score = np.amin(finval)
     message+="The best solution is: "+str(best_score)+" pos "+str(best_pos[0])+" "+str(worst_pos[-1])
+    return best_score,var1,Positions
     end=time.time()
     calculated_time=str(end-start)
     return best_score,var1,calculated_time
@@ -146,12 +143,16 @@ def rao3Algo(Max_iter,SearchAgents_no,lower_val,upper_val,received_position):
 
 def optimizationcode(request):
     if request.method=="POST":
-        global equation
         opt_pop_size=request.POST['pop_size']
         opt_gen=request.POST['gen']
         lb=request.POST['lb']
         ub=request.POST['ub']
-        user_input_data="Population Size: "+str(opt_pop_size)+"\n"+"Generations: "+str(opt_gen)+"\n"+"Lower bound: "+str(lb)+"\n"+"Upper bound: "+str(ub)+"\n"
+        leneq_rec=request.POST['leneq']
+        equation=request.POST['equation']
+        equation_rec=equation
+        equation_rec=equation_rec.replace(" ",",")
+        equation_rec=equation_rec.replace("+","%2B")
+        # user_input_data="Population Size: "+str(opt_pop_size)+"\n"+"Generations: "+str(opt_gen)+"\n"+"Lower bound: "+str(lb)+"\n"+"Upper bound: "+str(ub)+"\n"
         
         global jaya_container
         global rao_container
@@ -161,10 +162,10 @@ def optimizationcode(request):
         global rao_time
         global rao2_time
         global rao3_time
-                
-        t1 = threading.Thread(target=jaya_container_req,args=(opt_pop_size,opt_gen,lb,ub))
-        t2 = threading.Thread(target=rao_container_req,args=(opt_pop_size,opt_gen,lb,ub))
-        t3 = threading.Thread(target=rao2_container_req,args=(opt_pop_size,opt_gen,lb,ub))
+        leneq=int(leneq_rec)
+        t1 = threading.Thread(target=jaya_container_req,args=(equation_rec,leneq,opt_pop_size,opt_gen,lb,ub))
+        t2 = threading.Thread(target=rao_container_req,args=(equation_rec,leneq,opt_pop_size,opt_gen,lb,ub))
+        t3 = threading.Thread(target=rao2_container_req,args=(equation_rec,leneq,opt_pop_size,opt_gen,lb,ub))
         
         t1.start()
         t2.start()
@@ -181,10 +182,13 @@ def optimizationcode(request):
         rao2_algo_data={'algoname':str(rao2_container['text']),'algobest':str(rao2_container['best']),'algocoordi':str(rao2_container['algo-coordi']),'algotime':str(rao2_time)}
         
         concat=np.concatenate((np.array(jaya_container['Array']),np.array(rao_container['Array']),np.array(rao2_container['Array'])),axis=0)
-        best_score,coordinate,calc_time=rao3Algo(int(opt_gen), 3*(int(opt_pop_size)), int(lb), int(ub), concat)
+        best_score,coordinate,calc_time=rao3Algo(int(opt_gen), 3*(int(opt_pop_size)), int(lb), int(ub), concat,leneq,equation)
         rao3_algo_data={'algoname':str("Rao3 Final Output"),'algobest':str(best_score),'algocoordi':str(coordinate),'algotime':str(calc_time)}
-        alldata=[jaya_algo_data,rao_algo_data,rao2_algo_data,rao3_algo_data]
-    
+        
+        
+        alldata=[jaya_algo_data,
+            rao_algo_data,rao2_algo_data
+        ,rao3_algo_data]
         alldata={'alldata':alldata,'equation':equation}
         
         return render(request,'codeapp/output_optimization_containers.html',alldata)
@@ -199,4 +203,4 @@ def search(request):
     return HttpResponse("hii")
 
 
-'http://localhost:4012/check/?ub=10&lb=-10&popsize=10&gen=10'
+'http://localhost:4012/check/?ub=10&lb=-10&popsize=10&gen=10&len=15&eq=7.5,*,x[7],+,5.5,*,x[8],+,7,*,x[5],+,6,*,x[6],+,5,*,(,x[1],+,x[2],),+,10,*,x[9],-,x[10],**,3,+,15,*,x[13],-,2,*,x[14]'

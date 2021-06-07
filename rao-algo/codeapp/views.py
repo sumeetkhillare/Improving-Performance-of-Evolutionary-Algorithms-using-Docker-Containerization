@@ -6,11 +6,13 @@ from django.http import HttpResponse
 import random
 import math
 import numpy as np
-
+eq=""
+leneq=0
 message =''
 def raoAlgo(Max_iter,SearchAgents_no,lower_val,upper_val):
     maxfes = 500000  # Maximum functions evaluation
-    lenvar=4#changelenvar
+    global leneq
+    lenvar = leneq
     # Max_iter = math.floor(maxfes / SearchAgents_no)  # Maximum number of iterations
     # Max_iter = 100
     lb = lower_val * np.ones(lenvar)  # lower bound
@@ -20,8 +22,14 @@ def raoAlgo(Max_iter,SearchAgents_no,lower_val,upper_val):
     global message
     
     def fitness(x):
-        return (x[0]**2)-(x[1]**3)+(x[2]**2)+(x[3]**2)#changeequation
-
+        res=''
+        global eq
+        sep_var=eq.split(',')
+        for i in sep_var:
+            if "x" in i:
+                i=str(x[int(i[2])])
+            res+=i
+        return eval(res)
 
 
     Positions = np.zeros((SearchAgents_no, lenvar))  # search agent position
@@ -78,18 +86,27 @@ def raoAlgo(Max_iter,SearchAgents_no,lower_val,upper_val):
 def home(request):
     return render(request,'codeapp/home.html')
 def code(request):
-    if request.method=="POST":
-        query=request.POST['array']
-        returnstring='rao algo'
-        return HttpResponse('Sorted Array : '+returnstring)
-
-    return HttpResponse('Please give input')
-
+    popsize=int(request.GET['popsize'])
+    lb=int(request.GET['lb'])
+    ub=int(request.GET['ub'])
+    gen=int(request.GET['gen'])
+    global eq
+    eq=str(request.GET['eq'])
+    global leneq
+    leneq=int(request.GET['len'])
+    x,y,z=raoAlgo(gen,popsize,lb,ub)
+    return JsonResponse({'best':str(x),'algo-coordi':str(y),'text':'Rao1 Container','Array':z.tolist()})
+    
 
 def check(request):
     popsize=int(request.GET['popsize'])
     lb=int(request.GET['lb'])
     ub=int(request.GET['ub'])
     gen=int(request.GET['gen'])
+    global eq
+    eq=str(request.GET['eq'])
+    global leneq
+    leneq=int(request.GET['len'])
     x,y,z=raoAlgo(gen,popsize,lb,ub)
     return JsonResponse({'best':str(x),'algo-coordi':str(y),'text':'Rao1 Container','Array':z.tolist()})
+    

@@ -13,12 +13,21 @@ Max_iter = 100
 lb = -100 * np.ones(dim)  # lower bound
 ub = 100 * np.ones(dim)  # upper bound
 
+eq="7.5,*,x[7],+,5.5,*,x[8],+,7,*,x[5],+,6,*,x[6],+,5,*,(,x[1],+,x[2],),+,10,*,x[9],-,x[10],**,3,+,15,*,x[13],-,2,*,x[14]"
 
-def fitness(particle):
-    y = 0
-    for i in range(dim):
-        y = y + particle[i] ** 2  # sphere function
-    return y
+def fitness(x):
+    res=''
+    global eq
+    sep_var=eq.split(',')
+    for i in sep_var:
+        if "x" in i:
+            i=str(x[int(i[2])])
+        res+=i
+        
+    # y = 0
+    # for i in range(dim):
+    #     y = y + x[i] ** 2  # sphere function
+    return eval(res)
 
 
 Positions = np.zeros((SearchAgents_no, dim))  # search agent position
