@@ -11,6 +11,10 @@ import os
 import psycopg2
 import numpy as np
 import datetime
+lower_bound=''
+upper_bound=''
+population=''
+generation=''
 jaya_container=''
 rao_container=''
 rao2_container=''
@@ -75,10 +79,15 @@ def rao3Algo(Max_iter,SearchAgents_no,lower_val,upper_val,received_position):
     # SearchAgents_no = 10  # Population size
     # Max_iter = math.floor(maxfes / SearchAgents_no)  # Maximum number of iterations
     # Max_iter = 100
-    lb = lower_val * np.ones(lenvar)  # lower bound
-    ub = upper_val * np.ones(lenvar)  # upper bound
+    # lb = lower_val * np.ones(lenvar)  # lower bound
+    # ub = upper_val * np.ones(lenvar)  # upper bound
+
+    lb=lower_val
+    ub=upper_val
+    
     var1=[]
     global message
+    
     
     
     def fitness(x):
@@ -153,6 +162,10 @@ def optimizationcode(request):
         ub=request.POST['ub']
         user_input_data="Population Size: "+str(opt_pop_size)+"\n"+"Generations: "+str(opt_gen)+"\n"+"Lower bound: "+str(lb)+"\n"+"Upper bound: "+str(ub)+"\n"
         
+        global lower_bound
+        global upper_bound
+        global population
+        global generation
         global jaya_container
         global rao_container
         global rao2_container
@@ -162,6 +175,11 @@ def optimizationcode(request):
         global rao2_time
         global rao3_time
                 
+        lower_bound='Lower Bound: '+lb
+        upper_bound='Upper Bound: '+ub
+        generation='Generations: '+opt_gen
+        population='Population: '+opt_pop_size
+
         t1 = threading.Thread(target=jaya_container_req,args=(opt_pop_size,opt_gen,lb,ub))
         t2 = threading.Thread(target=rao_container_req,args=(opt_pop_size,opt_gen,lb,ub))
         t3 = threading.Thread(target=rao2_container_req,args=(opt_pop_size,opt_gen,lb,ub))
@@ -180,12 +198,21 @@ def optimizationcode(request):
         rao_algo_data={'algoname':str(rao_container['text']),'algobest':str(rao_container['best']),'algocoordi':str(rao_container['algo-coordi']),'algotime':str(rao_time)}
         rao2_algo_data={'algoname':str(rao2_container['text']),'algobest':str(rao2_container['best']),'algocoordi':str(rao2_container['algo-coordi']),'algotime':str(rao2_time)}
         
+        lower_list=lb.split(",")
+        upper_list=ub.split(",")
+        lb=[]
+        for i in lower_list:
+            lb.append(int(i))
+        ub=[]
+        for i in upper_list:
+            ub.append(int(i))
+            
         concat=np.concatenate((np.array(jaya_container['Array']),np.array(rao_container['Array']),np.array(rao2_container['Array'])),axis=0)
-        best_score,coordinate,calc_time=rao3Algo(int(opt_gen), 3*(int(opt_pop_size)), int(lb), int(ub), concat)
+        best_score,coordinate,calc_time=rao3Algo(int(opt_gen), 3*(int(opt_pop_size)), lb, ub, concat)
         rao3_algo_data={'algoname':str("Rao3 Final Output"),'algobest':str(best_score),'algocoordi':str(coordinate),'algotime':str(calc_time)}
         alldata=[jaya_algo_data,rao_algo_data,rao2_algo_data,rao3_algo_data]
     
-        alldata={'alldata':alldata,'equation':equation}
+        alldata={'alldata':alldata,'equation':equation,'population':population,'generation':generation,'lb':lower_bound,'ub':upper_bound}
         
         return render(request,'codeapp/output_optimization_containers.html',alldata)
 

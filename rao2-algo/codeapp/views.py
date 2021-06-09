@@ -14,8 +14,11 @@ def rao2Algo(Max_iter,SearchAgents_no,lower_val,upper_val):
     # SearchAgents_no = 10  # Population size
     # Max_iter = math.floor(maxfes / SearchAgents_no)  # Maximum number of iterations
     # Max_iter = 100
-    lb = lower_val * np.ones(lenvar)  # lower bound
-    ub = upper_val * np.ones(lenvar)  # upper bound
+    # lb = lower_val * np.ones(lenvar)  # lower bound
+    # ub = upper_val * np.ones(lenvar)  # upper bound
+    lb=lower_val
+    ub=upper_val
+    
     var1=[]
     global message
     
@@ -89,11 +92,23 @@ def code(request):
 
     return HttpResponse('Please give input')
 
-
+def try_int(x):
+    try:
+        return int(x)
+    except ValueError:
+        return x
 def check(request):
     popsize=int(request.GET['popsize'])
-    lb=int(request.GET['lb'])
-    ub=int(request.GET['ub'])
     gen=int(request.GET['gen'])
+    lower_list=(request.GET['lb'])
+    lower_list=lower_list.split(",")
+    lb=[]
+    for i in lower_list:
+        lb.append(int(i))
+    upper_list=(request.GET['ub'])
+    upper_list=upper_list.split(",")
+    ub=[]
+    for i in upper_list:
+        ub.append(int(i))
     x,y,z=rao2Algo(gen,popsize,lb,ub)
     return JsonResponse({'best':str(x),'algo-coordi':str(y),'text':'Rao2 Container','Array':z.tolist()})

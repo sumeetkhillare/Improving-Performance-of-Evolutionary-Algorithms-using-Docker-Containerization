@@ -96,10 +96,13 @@ def jaya(*argv):
 
 def main(pop_size1,Gen1,lower_val,upper_val):
 
-    global lb
-    global ub 
-    lb=[lower_val,lower_val,lower_val,lower_val]#changelb
-    ub=[upper_val,upper_val,upper_val,upper_val]#changeub
+    lb=[]
+    ub=[]
+    for i in lower_val:
+        lb.append(i)
+    for i in upper_val:
+        ub.append(i)
+
     best,xbest,population_received = jaya(pop_size1, Gen1, lb, ub)
     print('The objective function value = {}'.format(best))
     print('The optimum values of variables = {}'.format(xbest))
@@ -118,12 +121,25 @@ def code(request):
     return JsonResponse({'best':'code','algo-coordi':'code','text':'code','Array':'code'})
     # return HttpResponse("hii")
 
+def try_int(x):
+    try:
+        return int(x)
+    except ValueError:
+        return x
 
 def check(request):
     popsize=int(request.GET['popsize'])
-    lb=int(request.GET['lb'])
-    ub=int(request.GET['ub'])
     gen=int(request.GET['gen'])
-    x,y,population_received=main(int(popsize),int(gen),int(lb),int(ub))
+    lower_list=(request.GET['lb'])
+    lower_list=lower_list.split(",")
+    lb=[]
+    for i in lower_list:
+        lb.append(int(i))
+    upper_list=(request.GET['ub'])
+    upper_list=upper_list.split(",")
+    ub=[]
+    for i in upper_list:
+        ub.append(int(i))
+    x,y,population_received=main(int(popsize),int(gen),lb,ub)
     return JsonResponse({'best':str(x),'algo-coordi':str(y),'text':'Jaya Container','Array':population_received})
     
